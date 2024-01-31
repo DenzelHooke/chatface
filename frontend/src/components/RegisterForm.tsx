@@ -3,9 +3,6 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios"
 
-const a = import.meta.env.VITE_SERVER
-
-
 type FormData = {
   email: string;
   password1: string;
@@ -15,7 +12,7 @@ type FormData = {
 const RegisterForm = () => {
   const mutation = useMutation({
     mutationFn: (data: FormData) => {
-      return axios.post('localhost:3000/api/register', data)
+      return axios.post('http://localhost:3000/api/auth/register', {test: "Test"})
     }
   })
 
