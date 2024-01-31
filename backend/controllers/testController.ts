@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { ErrorRequestHandler, NextFunction, Request, Response } from "express";
 
 // @desc Get test
 // @route Get /api/users
@@ -10,4 +10,13 @@ const getTestUsers = (req: Request, res: any) => {
   });
 };
 
-export { getTestUsers };
+
+
+const getTest =  (req: Request, res: Response) => {
+  // res.redirect('/')
+  res.status(200).send("Hello")
+}
+
+export { getTestUsers, getTest };
+
+
