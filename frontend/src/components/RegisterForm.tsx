@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios"
+
+const a = import.meta.env.VITE_SERVER
+
 
 type FormData = {
   email: string;
@@ -8,15 +13,32 @@ type FormData = {
 };
 
 const RegisterForm = () => {
-  const [data, setData] = useState({});
+  const mutation = useMutation({
+    mutationFn: (data: FormData) => {
+      return axios.post('localhost:3000/api/register', data)
+    }
+  })
+
+  const [formData, setFormData] = useState<FormData>({
+    email: '',
+    password1: '',
+    password2: ''
+  });
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
 
-  const onSubmit = () => {
+  const onSubmit = (data: any) => {
     // e.preventDefault();
+    console.log("MUTATE CALLED")
+    setFormData(data)
+    const x = mutation.mutate(formData)
+    console.log(x)
+    console.log(formData)
+
   };
 
   return (
