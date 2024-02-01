@@ -1,9 +1,9 @@
 import { useState, useEffect, ChangeEventHandler, ChangeEvent } from "react";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios"
 
-type FormData = {
+type FormFields = {
   username: string;
   password1: string;
   password2: string;
@@ -11,59 +11,47 @@ type FormData = {
 
 const RegisterForm = () => {
   const mutation = useMutation({
-    mutationFn: (data: FormData) => {
-      return axios.post('http://localhost:3000/api/auth/register', formData)
+    mutationFn: (data: FormFields) => {
+      return axios.post('http://localhost:3000/api/auth/register', data)
     }
   })
-
-  const [formData, setFormData] = useState<FormData>({
-    username: 'JohnDoe',
-    password1: '123',
-    password2: '123'
-  });
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>();
+    formState: { errors }
+  } = useForm<FormFields>();
 
-  const onSubmit = (data: any) => {
-    // e.preventDefault();
-    console.log("MUTATE CALLED")
-    mutation.mutate(formData)
-  };
-  
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [e.target.name]: e.target.value
-    }))
-
+  const onSubmit: SubmitHandler<FormFields> = (data) => {
+    //Data gets converted to object containing our fields rather than a formElement Event object. 
+    console.log(data)
   }
+  
+  // HandleSubmit checks if our fields are all valid and prevents default behaviour of form submit. 
+
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <input
-        {...(register("username"), { required: true, maxLength: 99 })}
+        {...register("username", { required: "Username required" , })}
         placeholder="Username"
         type="text"
-        value={formData.username}
         name="username"
-        onChange={onChange}
       />
-      {errors.username && <span>This is required</span>}
-      <input {...register("password1")} placeholder="Password" type="text"
-      name="password1" value={formData.password1}
-      onChange={onChange}/>
+      { errors.username && <div>{errors.username.message}</div> }
+
+      <input {...register("password1", { required: "Password required", minLength: 8, validate: (string) => string.includes('@') })} placeholder="Password" type="text"
+      name="password1"/>
+      { errors.password1 && <div>{errors.password1.message}</div> }
+
       <input
-        {...register("password2")}
+        {...register("password2", { required: "Please confirm password", minLength: 8 })}
         placeholder="Confirm Password"
         type="text"
         name="password2"
-        value={formData.password2}
-        onChange={onChange}
-      />
+        />
+        { errors.password2 && <div>{errors.password2.message}</div> }
+
       <input type="submit" />
     </form>
   );
