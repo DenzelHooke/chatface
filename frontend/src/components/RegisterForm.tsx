@@ -35,6 +35,7 @@ const RegisterForm = () => {
       throw new Error();
     } catch {
       setError("root", {
+        // This would be message passed from server
         message: "This username is already taken",
       });
     }
@@ -51,7 +52,7 @@ const RegisterForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className="bg-indigo-500  ">
       <input
         {...register("username", { required: "Username required" })}
         placeholder="Username"
