@@ -5,9 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./login/Page.tsx";
 import Register from "./register/Page.tsx";
 import Index from "./index/Page.tsx";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Layout from "./Layout.tsx";
-
 
 const router = createBrowserRouter([
   {

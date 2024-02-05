@@ -1,7 +1,9 @@
-import { useState, useEffect, ChangeEventHandler, ChangeEvent } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import Input from "./Input";
+import FormError from "./FormError";
+import Button from "./Button";
 
 type FormFields = {
   username: string;
@@ -52,50 +54,57 @@ const RegisterForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="bg-indigo-500  ">
-      <input
-        {...register("username", { required: "Username required" })}
-        placeholder="Username"
-        type="text"
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-5">
+      <Input
+        label="Username"
         name="username"
+        register={register}
+        validation={{
+          required: "Username required buddy!",
+        }}
+        error={errors.username}
       />
-      {errors.username && <div>{errors.username.message}</div>}
+      {errors.username && <FormError message={errors.username.message} />}
 
       {/* Validate: Validate allows a function to enable custom input validators. If they validate to true, the form passes, else they validate to false */}
-      <input
-        {...register("password1", {
-          required: "Password required",
-          validate: (string) => passwordCheck(string),
-          minLength: {
-            value: 8,
-            message: " Password must have at least 8 characters",
-          },
-        })}
-        placeholder="Password"
-        type="text"
+
+      <Input
+        label="Password"
         name="password1"
-      />
-      {errors.password1 && <div>{errors.password1.message}</div>}
-
-      <input
-        {...register("password2", {
-          required: "Please confirm password",
-          validate: (string) => passwordCheck(string),
+        register={register}
+        validation={{
+          required: "Password required",
+          validate: (string: string) => passwordCheck(string),
           minLength: {
             value: 8,
             message: " Password must have at least 8 characters",
           },
-        })}
-        placeholder="Confirm Password"
-        type="text"
-        name="password2"
+        }}
+        placeholder="Password"
+        error={errors.password1}
       />
-      {errors.password2 && <div>{errors.password2.message}</div>}
+      {errors.password1 && <FormError message={errors.password1.message} />}
 
-      <button disabled={isSubmitting} type="submit">
-        {isSubmitting ? "LOADING" : "Submit"}
-      </button>
-      {errors.root && <div>{errors.root.message}</div>}
+      <Input
+        label="Confirm Password"
+        name="password2"
+        register={register}
+        validation={{
+          required: "Please confirm password",
+          validate: (string: string) => passwordCheck(string),
+          minLength: {
+            value: 8,
+            message: " Password must have at least 8 characters",
+          },
+        }}
+        error={errors.password2}
+        placeholder="Confirm Password"
+        type="password"
+      />
+      {errors.password2 && <FormError message={errors.password2.message} />}
+
+      <Button disabled={isSubmitting} type="submit" message="Create Account" />
+      {errors.root && <FormError message={errors.root.message} />}
     </form>
   );
 };
