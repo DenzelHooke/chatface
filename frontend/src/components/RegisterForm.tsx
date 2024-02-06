@@ -22,6 +22,7 @@ const RegisterForm = () => {
     register,
     handleSubmit,
     setError,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<FormFields>({
     defaultValues: {
@@ -30,15 +31,28 @@ const RegisterForm = () => {
   });
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
+    if (data.password1 !== data.password2) {
+      setError("password2", {
+        message: "Passwords do not match!",
+      });
+
+      return;
+    }
+
+    await new Promise((resolve, reject) => {
+      return setTimeout(resolve, 500);
+    });
+
     try {
       //Data gets converted to object containing our fields rather than a formElement Event object.
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      console.log(data);
-      throw new Error();
-    } catch {
+      const res = await axios.post(
+        "http://localhost:3000/api/auth/register",
+        data
+      );
+    } catch (error) {
       setError("root", {
         // This would be message passed from server
-        message: "This username is already taken",
+        message: "",
       });
     }
   };
@@ -77,7 +91,7 @@ const RegisterForm = () => {
           validate: (string: string) => passwordCheck(string),
           minLength: {
             value: 8,
-            message: " Password must have at least 8 characters",
+            message: "Password must have at least 8 characters",
           },
         }}
         placeholder="Password"
