@@ -1,3 +1,5 @@
+import userModel from "../models/UserModel";
+
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
@@ -8,7 +10,7 @@ const register = asyncHandler((req: Request, res: any) => {
   console.log(req.body);
   const { username, password1, password2 } = req.body;
 
-  if (!username || !password1 || password2) {
+  if (!username || !password1 || !password2) {
     throw new Error("Mising body data!");
   }
 
