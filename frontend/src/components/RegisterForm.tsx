@@ -5,10 +5,19 @@ import Input from "./Input";
 import FormError from "./FormError";
 import Button from "./Button";
 
+import { toast } from "react-toastify";
+
 type FormFields = {
   username: string;
+  email: string;
   password1: string;
   password2: string;
+};
+
+const passMin = 4;
+const passMinLengthOptions = {
+  value: passMin,
+  message: `Password must have at least ${passMin} characters`,
 };
 
 const RegisterForm = () => {
@@ -26,7 +35,10 @@ const RegisterForm = () => {
     formState: { errors, isSubmitting },
   } = useForm<FormFields>({
     defaultValues: {
-      username: "JohnDoe",
+      username: "John Doe",
+      email: "mail@mail.com",
+      password1: "1234@",
+      password2: "1234@",
     },
   });
 
@@ -39,6 +51,7 @@ const RegisterForm = () => {
       return;
     }
 
+    // Arttificial loading for future loading animation
     await new Promise((resolve, reject) => {
       return setTimeout(resolve, 500);
     });
@@ -49,6 +62,10 @@ const RegisterForm = () => {
         "http://localhost:3000/api/auth/register",
         data
       );
+
+      if (res.data) {
+        toast.success(res.data.message);
+      }
     } catch (error) {
       setError("root", {
         // This would be message passed from server
@@ -72,6 +89,7 @@ const RegisterForm = () => {
       <Input
         label="Username"
         name="username"
+        placeholder="Username"
         register={register}
         validation={{
           required: "Username required buddy!",
@@ -79,6 +97,18 @@ const RegisterForm = () => {
         error={errors.username}
       />
       {errors.username && <FormError message={errors.username.message} />}
+
+      <Input
+        label="Email"
+        name="email"
+        placeholder="Email"
+        register={register}
+        validation={{
+          required: "Email required",
+        }}
+        error={errors.email}
+      />
+      {errors.email && <FormError message={errors.email.message} />}
 
       {/* Validate: Validate allows a function to enable custom input validators. If they validate to true, the form passes, else they validate to false */}
 
@@ -88,11 +118,7 @@ const RegisterForm = () => {
         register={register}
         validation={{
           required: "Password required",
-          validate: (string: string) => passwordCheck(string),
-          minLength: {
-            value: 8,
-            message: "Password must have at least 8 characters",
-          },
+          minLength: passMinLengthOptions,
         }}
         placeholder="Password"
         error={errors.password1}
@@ -105,11 +131,7 @@ const RegisterForm = () => {
         register={register}
         validation={{
           required: "Please confirm password",
-          validate: (string: string) => passwordCheck(string),
-          minLength: {
-            value: 8,
-            message: " Password must have at least 8 characters",
-          },
+          minLength: passMinLengthOptions,
         }}
         error={errors.password2}
         placeholder="Confirm Password"

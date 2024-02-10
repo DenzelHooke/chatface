@@ -1,10 +1,30 @@
+import dotenv from "dotenv";
+const mongoose = require("mongoose");
 import express, { Express, Request, Response } from "express";
 const cors = require("cors");
 const { errorHandler } = require("./middleware/errorMiddleware.ts");
-// const http = require('http')
 
 const app: Express = express();
 const port: Number = 3000;
+
+const connectDB = async () => {
+  try {
+    const valid = dotenv.config();
+
+    if (!valid) {
+      console.log(valid);
+      throw new Error();
+    }
+    await mongoose.connect(process.env.MONGO_DB_URI);
+
+    console.log(`Connected to Mongo cluster: ${mongoose.connection.host}`);
+  } catch (error) {
+    console.log("Failed to connect to Mongo DB cluster", error);
+    process.exit(1);
+  }
+};
+
+connectDB();
 
 app.use(cors());
 
