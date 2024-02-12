@@ -4,8 +4,11 @@ import axios from "axios";
 import Input from "./Input";
 import FormError from "./FormError";
 import Button from "./Button";
+import { setError as setToastError, setSuccess } from "../../features/global/globalSlice"; 
+import { useDispatch } from "react-redux";
 
-import { toast } from "react-toastify";
+
+
 
 type FormFields = {
   username: string;
@@ -21,6 +24,8 @@ const passMinLengthOptions = {
 };
 
 const RegisterForm = () => {
+  
+  const dispatch = useDispatch();
   const mutation = useMutation({
     mutationFn: (data: FormFields) => {
       return axios.post("http://localhost:3000/api/auth/register", data);
@@ -31,7 +36,6 @@ const RegisterForm = () => {
     register,
     handleSubmit,
     setError,
-    setValue,
     formState: { errors, isSubmitting },
   } = useForm<FormFields>({
     defaultValues: {
@@ -64,13 +68,11 @@ const RegisterForm = () => {
       );
 
       if (res.data) {
-        toast.success(res.data.message);
+        dispatch(setSuccess(res.data.message))
       }
-    } catch (error) {
-      setError("root", {
-        // This would be message passed from server
-        message: "",
-      });
+    } catch (error: any) {
+      console.log(error)
+      // dispatch(setToastError(error));
     }
   };
 

@@ -32,11 +32,12 @@ app.use(cors());
 app.use(express.json());
 // Allows us to parse urlencoded req body.
 app.use(express.urlencoded({ extended: true }));
-app.use(errorHandler);
 
 app.use("/api/auth/", require("./routes/authRoutes"));
 app.use("/api/test/", require("./routes/testRoutes"));
+app.use(errorHandler);
 
+  
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello, welcome to the ChatFace API.");
 });
