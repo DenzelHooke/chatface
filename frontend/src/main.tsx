@@ -7,6 +7,9 @@ import Register from "./register/Page.tsx";
 import Index from "./index/Page.tsx";
 import Layout from "./Layout.tsx";
 
+import { store } from "../app/store.ts";
+import { Provider } from "react-redux";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -24,8 +27,10 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <Layout>
-      <RouterProvider router={router} />
-    </Layout>
+    <Provider store={store}>
+      <Layout>
+        <RouterProvider router={router} />
+      </Layout>
+    </Provider>
   </React.StrictMode>
 );

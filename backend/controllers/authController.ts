@@ -35,7 +35,8 @@ const register = asyncHandler(async (req: Request, res: any) => {
     throw new Error("Account with that email already exists");
   }
 
-  const salt = bcrypt.genSalt(saltRounds);
+  const salt = await bcrypt.genSalt(saltRounds);
+
   // Wait for password to hash
   // Uses blowfish cipher, slightly slower but much more secure than other algs
   const hashedPass = await bcrypt.hash(password1, salt);
