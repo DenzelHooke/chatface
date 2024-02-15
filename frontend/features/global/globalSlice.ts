@@ -20,6 +20,7 @@ export const globalSlice = createSlice({
   initialState,
   reducers: {
     setError: (state, action: PayloadAction<string>) => {
+      console.log(action);
       state.error = true;
       state.errorMessage = action.payload;
     },

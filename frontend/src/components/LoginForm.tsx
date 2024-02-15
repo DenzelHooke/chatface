@@ -14,9 +14,7 @@ import { useDispatch } from "react-redux";
 
 type FormFields = {
   username: string;
-  email: string;
-  password1: string;
-  password2: string;
+  password: string;
 };
 
 const passMin = 4;
@@ -25,7 +23,7 @@ const passMinLengthOptions = {
   message: `Password must have at least ${passMin} characters`,
 };
 
-const RegisterForm = () => {
+const LoginForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -43,21 +41,11 @@ const RegisterForm = () => {
   } = useForm<FormFields>({
     defaultValues: {
       username: "John Doe",
-      email: "mail@mail.com",
-      password1: "1234@",
-      password2: "1234@",
+      password: "1234@",
     },
   });
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    if (data.password1 !== data.password2) {
-      setError("password2", {
-        message: "Passwords do not match!",
-      });
-
-      return;
-    }
-
     // Arttificial loading for future loading animation
     await new Promise((resolve, reject) => {
       return setTimeout(resolve, 500);
@@ -66,27 +54,17 @@ const RegisterForm = () => {
     try {
       //Data gets converted to object containing our fields rather than a formElement Event object.
       const res = await axios.post(
-        "http://localhost:3000/api/auth/register",
+        "http://localhost:3000/api/auth/login",
         data
       );
 
       if (res.data) {
-        dispatch(setSuccess("Account Created"));
-        setTimeout(() => navigate("/login"), 1000);
+        dispatch(setSuccess("Login Successful"));
+        setTimeout(() => navigate("/dashboard"), 1000);
       }
     } catch (error: any) {
       dispatch(setToastError(error.response.data.message));
     }
-  };
-
-  // HandleSubmit checks if our fields are all valid and prevents default behaviour of form submit.
-
-  const passwordCheck = (string: string) => {
-    if (!string.includes("@")) {
-      return 'Password must contain "@"';
-    }
-
-    return true;
   };
 
   return (
@@ -103,50 +81,23 @@ const RegisterForm = () => {
       />
       {errors.username && <FormError message={errors.username.message} />}
 
-      <Input
-        label="Email"
-        name="email"
-        placeholder="Email"
-        register={register}
-        validation={{
-          required: "Email required",
-        }}
-        error={errors.email}
-      />
-      {errors.email && <FormError message={errors.email.message} />}
-
       {/* Validate: Validate allows a function to enable custom input validators. If they validate to true, the form passes, else they validate to false */}
 
       <Input
         label="Password"
-        name="password1"
+        name="password"
         register={register}
         validation={{
           required: "Password required",
-          minLength: passMinLengthOptions,
         }}
         placeholder="Password"
-        error={errors.password1}
+        error={errors.password}
       />
-      {errors.password1 && <FormError message={errors.password1.message} />}
+      {errors.password && <FormError message={errors.password.message} />}
 
-      <Input
-        label="Confirm Password"
-        name="password2"
-        register={register}
-        validation={{
-          required: "Please confirm password",
-          minLength: passMinLengthOptions,
-        }}
-        error={errors.password2}
-        placeholder="Confirm Password"
-        type="password"
-      />
-      {errors.password2 && <FormError message={errors.password2.message} />}
-
-      <Button disabled={isSubmitting} type="submit" message="Create Account" />
+      <Button disabled={isSubmitting} type="submit" message="Login" />
       {errors.root && <FormError message={errors.root.message} />}
     </form>
   );
 };
-export default RegisterForm;
+export default LoginForm;
