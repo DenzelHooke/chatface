@@ -6,6 +6,7 @@ import Login from "./login/Page.tsx";
 import Register from "./register/Page.tsx";
 import Index from "./index/Page.tsx";
 import Layout from "./Layout.tsx";
+import Dashboard from "./dashboard/Page.tsx";
 
 import { store } from "../app/store.ts";
 import { Provider } from "react-redux";
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <Register />,
+  },
+  {
+    path: "/dashboard",
+    element: <Dashboard />,
   },
 ]);
 

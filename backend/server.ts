@@ -35,9 +35,10 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/auth/", require("./routes/authRoutes"));
 app.use("/api/test/", require("./routes/testRoutes"));
+app.use("/api/user/", require("./routes/userRoutes"));
+
 app.use(errorHandler);
 
-  
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello, welcome to the ChatFace API.");
 });
