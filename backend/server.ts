@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 import express, { Express, Request, Response } from "express";
 const cors = require("cors");
 const { errorHandler } = require("./middleware/errorMiddleware.ts");
-
+const cookieParser = require("cookie-parser");
 const app: Express = express();
 const port: Number = 3000;
 
@@ -26,16 +26,23 @@ const connectDB = async () => {
 
 connectDB();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    withCredentials: true,
+  })
+);
 
 // Allows us to parse json req body.
 app.use(express.json());
 // Allows us to parse urlencoded req body.
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.use("/api/auth/", require("./routes/authRoutes"));
 app.use("/api/test/", require("./routes/testRoutes"));
 app.use("/api/user/", require("./routes/userRoutes"));
+app.use("/api/friends", require("./routes/friendsRoutes"));
 
 app.use(errorHandler);
 

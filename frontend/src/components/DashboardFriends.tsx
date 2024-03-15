@@ -15,10 +15,14 @@ const DashboardFriends = () => {
       axios.post("http://localhost:3000/api/user?friends=all"),
   });
 
+  const onSearchBarValueChange = (
+    data: React.ChangeEvent<HTMLInputElement>
+  ) => {};
+
   return (
-    <div className="bg-white rounded-md p-5 mr-5 w-[300px]">
+    <div className="hidden md:block bg-white rounded-md p-5 mr-5 w-[300px] border-[1px] border-borderGrey">
       {/* Map over friends list */}
-      <SearchBar />
+      <SearchBar onChange={onSearchBarValueChange} />
       <AddFriend />
       <FriendItem />
     </div>

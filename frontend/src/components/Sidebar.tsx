@@ -1,4 +1,4 @@
 const Sidebar = () => {
-  return <div className="max-w-52 h- flex-grow mr-10"></div>;
+  return <div className="hidden md:block max-w-32 flex-grow mr-5 "></div>;
 };
 export default Sidebar;

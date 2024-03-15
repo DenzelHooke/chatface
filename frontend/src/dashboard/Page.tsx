@@ -25,11 +25,13 @@ const Page = () => {
   // }, [isError, isSuccess]);
 
   return (
-    <section className="bg-blackishPurple h-screen">
-      <div id="inner-container" className="flex p-4 h-[100%]">
+    <section className="bg-blackishPurple min-h-screen">
+      <div id="inner-container" className="flex p-4 h-screen">
         <Sidebar />
 
-        <MainPane />
+        <div className="flex h-full flex-grow items-center justify-center">
+          <MainPane />
+        </div>
       </div>
       {/* <DashboardFriends /> */}
     </section>

@@ -95,14 +95,14 @@ const login = asyncHandler(async (req: Request, res: Response) => {
   }
 
   // Generate jwt
-  const token = jwt.sign(
+  const token = await jwt.sign(
     {
       user: exists.id,
     },
     process.env.JWT_SECRET as string
   );
 
-  cookie.set("token", token);
+  const a = res.cookie("token", "test");
 
   res.status(200).json({ message: "Hello World" });
 });

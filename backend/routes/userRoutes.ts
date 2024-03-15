@@ -1,5 +1,9 @@
 const express = require("express");
-const { getFriends, addFriend } = require("../controllers/userController");
+const {
+  getFriends,
+  addFriend,
+  findFriends,
+} = require("../controllers/userController");
 
 const router = express.Router();
 
@@ -8,6 +12,8 @@ const router = express.Router();
 router.get("/friends", getFriends);
 
 router.post("/addFriend", addFriend);
+
+router.post("/findFriends", findFriends);
 
 module.exports = router;
 

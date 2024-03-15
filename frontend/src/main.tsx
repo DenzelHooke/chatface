@@ -10,6 +10,9 @@ import Dashboard from "./dashboard/Page.tsx";
 
 import { store } from "../app/store.ts";
 import { Provider } from "react-redux";
+import Modal from "react-modal";
+
+Modal.setAppElement("#root");
 
 const router = createBrowserRouter([
   {
