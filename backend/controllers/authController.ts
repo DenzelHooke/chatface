@@ -102,7 +102,7 @@ const login = asyncHandler(async (req: Request, res: Response) => {
     process.env.JWT_SECRET as string
   );
 
-  const a = res.cookie("token", "test");
+  res.cookie("token", token);
 
   res.status(200).json({ message: "Hello World" });
 });

@@ -1,11 +1,17 @@
 import dotenv from "dotenv";
 const mongoose = require("mongoose");
 import express, { Express, Request, Response } from "express";
+
 const cors = require("cors");
 const { errorHandler } = require("./middleware/errorMiddleware.ts");
 const cookieParser = require("cookie-parser");
 const app: Express = express();
 const port: Number = 3000;
+
+const corsOptions = {
+  origin: "http://localhost:5173",
+  credentials: true,
+};
 
 const connectDB = async () => {
   try {
@@ -25,19 +31,12 @@ const connectDB = async () => {
 };
 
 connectDB();
-
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    withCredentials: true,
-  })
-);
-
+app.use(cors(corsOptions));
+app.use(cookieParser());
 // Allows us to parse json req body.
 app.use(express.json());
 // Allows us to parse urlencoded req body.
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 
 app.use("/api/auth/", require("./routes/authRoutes"));
 app.use("/api/test/", require("./routes/testRoutes"));

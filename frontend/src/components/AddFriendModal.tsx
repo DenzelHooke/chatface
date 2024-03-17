@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 import SearchBar from "./Searchbar";
 import DisplayFoundUsers from "./DisplayFoundUsers";
 
+// Sets credentials globally
+axios.defaults.withCredentials = true;
+
 const AddFriendModal = () => {
   // Send post request with search value
   const { isSuccess, isError, isPending, data, mutate } = useMutation({
@@ -39,7 +42,7 @@ const AddFriendModal = () => {
   };
 
   return (
-    <div id="add-friend-modal" className="w-[510px] h-[610px]">
+    <div id="add-friend-modal" className="w-[510px] h-[610px] relative">
       <div className="inner-modal-container">
         <div id="add-friend-heading-container" className="">
           <h2 className="font-bold text-center text-4xl mb-10 pt-2">

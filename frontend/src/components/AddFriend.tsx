@@ -30,6 +30,12 @@ const AddFriend = () => {
         style={customStyles}
         contentLabel="Example Modal"
       >
+        <button
+          onClick={() => setModalOpen(false)}
+          className="absolute right-0 top-0 m-2 p-2 px-4 rounded-lg z-50 hover:bg-slate-50 bg-white border border-borderGrey font-bold "
+        >
+          X
+        </button>
         {<AddFriendModal />}
       </Modal>
 

@@ -1,7 +1,7 @@
 import userModel from "../models/UserModel";
 import { IUser } from "../models/UserModel";
 import Cookies from "cookies";
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 
 import { Request, Response } from "express";
 import expressAsyncHandler from "express-async-handler";
@@ -13,22 +13,26 @@ const getFriends = expressAsyncHandler(async (req: Request, res: Response) => {
   res.json({ message: "Get friends hit!" });
 });
 
-const addFriend = expressAsyncHandler(async (req: Request, res: Response) => {
-  res.json({ message: "Add Friend Hit!" });
-});
+const addFriend = expressAsyncHandler(
+  async (req: Request, res: Response) => {}
+);
 
 const findFriends = expressAsyncHandler(async (req: Request, res: Response) => {
-  const cookie = new Cookies(req, res);
+  try {
+    const { username } = req.body;
+    // ^ example: returns all results that *start* with "jo"
 
-  const { username } = req.body;
-  // ^ example: returns all results that *start* with "jo"
+    const users = await userModel.find({
+      username: { $regex: `^${username}`, $options: "i" },
+    });
 
-  const users = await userModel.find({
-    username: { $regex: `^${username}`, $options: "i" },
-  });
-
-  if (users) {
-    res.json({ result: users });
+    if (users) {
+      res.json({ result: users });
+    }
+  } catch (error) {
+    throw new Error("An unknown error occured while searching for users.");
+    console.log(error);
   }
 });
+
 module.exports = { getFriends, addFriend, findFriends };
