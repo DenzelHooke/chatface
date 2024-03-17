@@ -1,12 +1,17 @@
-import { UserItem } from "../types/users";
+import { UserItem, FriendRequestSuccess } from "../types/users";
 import { v4 as uuidv4 } from "uuid";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { isPending } from "@reduxjs/toolkit";
+
 import SpinningLoader from "./utils/SpinningLoader";
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setSuccess } from "../../features/global/globalSlice";
+
 
 const AddFriendItem = ({ item }: { item: UserItem }) => {
+  const dispatch = useDispatch()
+  
   const [isLoading, setIsLoading] = useState(false);
 
   const sendFriendRequestMutation = useMutation({
@@ -16,15 +21,20 @@ const AddFriendItem = ({ item }: { item: UserItem }) => {
         id: id,
       });
     },
-    onSuccess: () => {
-      // Triggers artificial delay for at least 2 seconds guranteed
-      //   This is to make sure loading spinner can be shown (cheeky, i know..)
-      console.log("On success triggered!");
-      setTimeout(() => setIsLoading(false), 2000);
+    onSuccess: (data) => {
+      const status: FriendRequestSuccess = data.data
+
+      // Triggers artificial delay for at least x amount if seconds(or ms) guranteed.
+      //   This is to make sure loading spinner can be shown (cheeky, i know...)
+
+      setTimeout(() => {
+        setIsLoading(false)
+        dispatch(setSuccess(status.message))
+      }, 500);
     },
   });
 
-  useEffect(() => {}, [isLoading]);
+
   const onClick = (id: string) => {
     if (isLoading) {
       return;
@@ -58,7 +68,7 @@ const AddFriendItem = ({ item }: { item: UserItem }) => {
           <SpinningLoader />
         ) : (
           <>
-            <p>Send Fried Request</p>
+            <p>Send Friend Request</p>
           </>
         )}
       </button>

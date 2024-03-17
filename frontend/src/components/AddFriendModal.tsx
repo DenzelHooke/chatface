@@ -3,11 +3,16 @@ import { useMutation } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import SearchBar from "./Searchbar";
 import DisplayFoundUsers from "./DisplayFoundUsers";
+import { toast } from "react-toastify";
+import { setSuccess } from "../../features/global/globalSlice";
+import { useDispatch } from "react-redux";
 
 // Sets credentials globally
 axios.defaults.withCredentials = true;
 
 const AddFriendModal = () => {
+  const dispatch = useDispatch()
+
   // Send post request with search value
   const { isSuccess, isError, isPending, data, mutate } = useMutation({
     mutationFn: async (value: string) => {
@@ -22,17 +27,11 @@ const AddFriendModal = () => {
     },
   });
 
-  useEffect(() => {
-    if (data) {
-      console.log(data.data.result);
-    }
-  }, [data]);
 
   // Display users
 
   // Add actions attached to each user
   const onValueChange = async (data: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(data.target.value);
     const value = data.target.value;
 
     //TODO Call endpoint

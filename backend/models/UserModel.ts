@@ -4,6 +4,9 @@ export interface IUser extends Document {
   username: string;
   email: string;
   password: string;
+  friendRequests: Array<string>;
+  roomsJoined: Array<string>;
+  roomsCreated: Array<string>;
 }
 
 const userSchema: Schema = new Schema({
@@ -21,6 +24,21 @@ const userSchema: Schema = new Schema({
     type: String,
     required: [true, "Password is required"],
   },
+  friendRequests: {
+    type: Array,
+    required: [false],
+    unique: [false]
+  },
+  roomsJoined: {
+    type: Array,
+    required: [false],
+    unique: [false],
+  },
+  roomsCreated: {
+    type: Array,
+    required: [false],
+    unique: [false],
+  }
 });
 
 export default mongoose.model<IUser>("User", userSchema);

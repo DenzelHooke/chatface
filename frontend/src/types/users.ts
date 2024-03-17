@@ -4,3 +4,7 @@ export interface UserItem {
   profileURL: string;
   _id: string;
 }
+
+export interface FriendRequestSuccess {
+  message: string;
+}

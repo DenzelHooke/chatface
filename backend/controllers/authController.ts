@@ -39,7 +39,6 @@ const register = asyncHandler(async (req: Request, res: any) => {
     throw new Error("Account with that email already exists");
   }
 
-  console.log(password1, password2);
   // Wait for password to hash
   // Uses blowfish cipher, slightly slower but much more secure than other algs
   const salt = await bcrypt.genSalt(saltRounds);

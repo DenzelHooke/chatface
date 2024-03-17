@@ -7,29 +7,29 @@ interface AddFriendDto {
   id: string;
 }
 
+interface Token {
+  user: string;
+  iat: number;
+}
+
 const addFriend = expressAsyncHandler(async (req: Request, res: Response) => {
   try {
     const data: AddFriendDto = req.body;
     const senderToken = req.cookies.token;
     const recipientID = data.id;
 
-    // TODO CLEAN UP AND MAKE HELPER FUNCTIONS!
-
     // Verify if token is unmodified/valid
-    const tokenIsValid = jwt.verify(
+    const token: Token = jwt.verify(
       senderToken,
       process.env.JWT_SECRET as string
-    );
-
-    console.log("token: ", tokenIsValid);
-    console.log("Recipient ID: ", recipientID);
+    ) as Token;
 
     // Raise error if token has been modified
-    if (!tokenIsValid) {
+    if (!token) {
       throw new Error("Token is invalid");
     }
 
-    // Raise error if sender doesnt have ID cookie
+    // Raise error if recipient ID is missing
     if (!recipientID) {
       throw new Error("Recipient ID must be provided");
     }
@@ -41,16 +41,25 @@ const addFriend = expressAsyncHandler(async (req: Request, res: Response) => {
       throw new Error("No user found that matches ID");
     }
 
+    // Initialize friendRequests array if it doesn't exist
+    if (!recipient.friendRequests) {
+      recipient.friendRequests = [];
+    }
+
+    // Push sender's user ID to friendRequests array
+    recipient.friendRequests.push(token.user);
+
+    // Save changes
+    await recipient.save();
+
     res.status(200).json({
-      recipient: recipient,
+      message: "Friend request sent",
     });
-    // Set "friend requests" field with array of users
   } catch (error) {
-    console.log(error);
-    throw new Error("An unknown error occured while attempting to add friend");
+    console.error(error);
+    throw new Error("An unknown error occurred while attempting to add friend");
   }
 });
 
-//! TODO MOVE OVER GET FRIENDS INTO THIS CONTROLLER
-
-module.exports = { addFriend };
+// Export the addFriend function
+export { addFriend };
