@@ -4,14 +4,14 @@ import { useState, useEffect } from "react";
 import SearchBar from "./Searchbar";
 import DisplayFoundUsers from "./DisplayFoundUsers";
 import { toast } from "react-toastify";
-import { setSuccess } from "../../features/global/globalSlice";
+import { setError, setSuccess } from "../../features/global/globalSlice";
 import { useDispatch } from "react-redux";
 
 // Sets credentials globally
 axios.defaults.withCredentials = true;
 
 const AddFriendModal = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   // Send post request with search value
   const { isSuccess, isError, isPending, data, mutate } = useMutation({
@@ -25,8 +25,10 @@ const AddFriendModal = () => {
     onSuccess: () => {
       //TODO SHOW SUCCESS MESSAGE
     },
+    onError: (data) => {
+      dispatch(setError(data.message));
+    },
   });
-
 
   // Display users
 

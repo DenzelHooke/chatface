@@ -1,4 +1,5 @@
-import { UserItem } from "../types/users";
+import { DisplayFriendsItem } from "../types/users";
+
 import { useState } from "react";
 import AddFriendItem from "./AddFriendItem";
 
@@ -8,7 +9,7 @@ const DisplayFoundUsers = ({
   isLoading,
   isError,
 }: {
-  data: UserItem[];
+  data: DisplayFriendsItem[];
   isSuccess: boolean;
   isLoading: boolean;
   isError: boolean;
@@ -18,7 +19,7 @@ const DisplayFoundUsers = ({
   }
 
   if (isSuccess && data?.length > 0) {
-    return data.map((item: UserItem) => (
+    return data.map((item: DisplayFriendsItem) => (
       <>
         <AddFriendItem item={item} />
       </>

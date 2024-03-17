@@ -2,14 +2,11 @@ import { Request, Response } from "express";
 import expressAsyncHandler from "express-async-handler";
 import UserModel from "../models/UserModel";
 import jwt from "jsonwebtoken";
+import { hasNoFriendRequests } from "../helpers/helpers";
+import { Token } from "../types/types";
 
 interface AddFriendDto {
   id: string;
-}
-
-interface Token {
-  user: string;
-  iat: number;
 }
 
 const addFriend = expressAsyncHandler(async (req: Request, res: Response) => {
@@ -36,24 +33,37 @@ const addFriend = expressAsyncHandler(async (req: Request, res: Response) => {
 
     // Find recipient
     const recipient = await UserModel.findById(recipientID);
+    const sender = await UserModel.findById(token.user);
+    // Check if sender has already sent friend request to this user
+
+    if (!sender) {
+      throw new Error("Sender user model not found");
+    }
 
     if (!recipient) {
       throw new Error("No user found that matches ID");
     }
 
-    // Initialize friendRequests array if it doesn't exist
-    if (!recipient.friendRequests) {
-      recipient.friendRequests = [];
+    // Check if recipient has already received a request from sender
+    if (!hasNoFriendRequests(recipient, sender)) {
+      res
+        .status(401)
+        .json({ message: "Friend request already sent", duplicate: true });
+      return;
     }
-
-    // Push sender's user ID to friendRequests array
+    // Push sender ID to friendRequests array
     recipient.friendRequests.push(token.user);
+
+    // Push recipient id to show that sender sent friend request to recipient
+    sender.friendRequestsSent.push(recipient.id);
 
     // Save changes
     await recipient.save();
+    await sender.save();
 
     res.status(200).json({
       message: "Friend request sent",
+      duplicate: false,
     });
   } catch (error) {
     console.error(error);
@@ -61,5 +71,4 @@ const addFriend = expressAsyncHandler(async (req: Request, res: Response) => {
   }
 });
 
-// Export the addFriend function
 export { addFriend };

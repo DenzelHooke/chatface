@@ -5,6 +5,7 @@ export interface IUser extends Document {
   email: string;
   password: string;
   friendRequests: Array<string>;
+  friendRequestsSent: Array<string>;
   roomsJoined: Array<string>;
   roomsCreated: Array<string>;
 }
@@ -27,7 +28,12 @@ const userSchema: Schema = new Schema({
   friendRequests: {
     type: Array,
     required: [false],
-    unique: [false]
+    unique: [false],
+  },
+  friendRequestsSent: {
+    type: Array,
+    required: [false],
+    unique: [false],
   },
   roomsJoined: {
     type: Array,
@@ -38,7 +44,7 @@ const userSchema: Schema = new Schema({
     type: Array,
     required: [false],
     unique: [false],
-  }
+  },
 });
 
 export default mongoose.model<IUser>("User", userSchema);
