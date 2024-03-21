@@ -10,10 +10,10 @@ import MainPane from "../components/MainPane";
 const Page = () => {
   const dispatch = useDispatch();
 
-  const { data, isLoading, isError, isSuccess, refetch } = useQuery({
-    queryKey: ["getRooms"],
-    queryFn: async () => axios.post("http://localhost:3000/api/auth/verify"),
-  });
+  // const { data, isLoading, isError, isSuccess, refetch } = useQuery({
+  //   queryKey: ["getRooms"],
+  //   queryFn: async () => axios.post("http://localhost:3000/api/auth/verify"),
+  // });
 
   // useEffect(() => {
   //   if (isError) {

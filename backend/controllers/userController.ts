@@ -11,8 +11,44 @@ import { Token } from "../types/types";
 // @route POST /api/user/friends/?all*
 // @access PRIVATE
 const getFriends = expressAsyncHandler(async (req: Request, res: Response) => {
+  try {
+    const token = req.cookies.token;
+
+    const decodedToken: Token = jwt.verify(
+      token,
+      process.env.JWT_SECRET as string
+    ) as Token;
+
+    const user = await UserModel.findById(decodedToken.user);
+
+    if (!user) {
+      throw new Error("User not found with token");
+    }
+
+    res.status(200).json({
+      result: user.friends.map(async (id: string) => {
+        const user = await UserModel.findById(id);
+
+        if (!user) {
+          throw new Error("Couldn't find user by ID while creating map");
+        }
+
+        return {
+          username: user.username,
+          profilePicture: user.profilePicture,
+          _id: user.id,
+        };
+      }),
+    });
+  } catch (error) {
+    console.log(error);
+    throw new Error("An unknown error occured while grabbing friend data");
+  }
+
   res.json({ message: "Get friends hit!" });
 });
+
+const getPendingFriendRequests = expressAsyncHandler(async () => {});
 
 const findUsers = expressAsyncHandler(async (req: Request, res: Response) => {
   try {

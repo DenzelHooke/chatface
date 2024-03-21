@@ -8,11 +8,12 @@ import SearchBar from "./Searchbar";
 import AddFriend from "./AddFriend";
 
 const DashboardFriends = () => {
-  const { data, isLoading, isError, isSuccess, refetch } = useQuery({
-    queryKey: ["getRooms"],
-    queryFn: async () =>
-      // Pass user cookie in httpOnly
-      axios.post("http://localhost:3000/api/user?friends=all"),
+  const getFriends = useQuery({
+    queryKey: ["getFriends"],
+    queryFn: () => {
+      return axios.get("localhost:3000/api/user/friends");
+    },
+    retry: 1,
   });
 
   const onSearchBarValueChange = (
@@ -21,10 +22,15 @@ const DashboardFriends = () => {
 
   return (
     <div className="hidden md:block bg-white rounded-md p-5 mr-5 w-[300px] border-[1px] border-borderGrey">
-      {/* Map over friends list */}
+      {/* Map o  friends list */}
       <SearchBar onChange={onSearchBarValueChange} />
       <AddFriend />
       <FriendItem />
+
+      <p>Friends</p>
+      {/* {getFriends.data?.data.friends.map((id: string) => {})} */}
+      <p>Requests</p>
+      <p>Requested Recieved</p>
     </div>
   );
 };

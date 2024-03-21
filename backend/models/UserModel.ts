@@ -4,6 +4,8 @@ export interface IUser extends Document {
   username: string;
   email: string;
   password: string;
+  profilePicture: string;
+  friends: Array<string>;
   friendRequests: Array<string>;
   friendRequestsSent: Array<string>;
   roomsJoined: Array<string>;
@@ -25,9 +27,17 @@ const userSchema: Schema = new Schema({
     type: String,
     required: [true, "Password is required"],
   },
-  friendRequests: {
+  profilePicture: {
+    type: String,
+    required: [true, "Profile picture is required"],
+  },
+  friends: {
     type: Array,
     required: [false],
+  },
+  friendRequests: {
+    type: Array,
+    required: [true],
     unique: [false],
   },
   friendRequestsSent: {
