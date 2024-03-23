@@ -12,6 +12,7 @@ import { Token } from "../types/types";
 // @access PRIVATE
 const getFriends = expressAsyncHandler(async (req: Request, res: Response) => {
   try {
+    res.status(200);
     const token = req.cookies.token;
 
     const decodedToken: Token = jwt.verify(
@@ -30,7 +31,7 @@ const getFriends = expressAsyncHandler(async (req: Request, res: Response) => {
         const user = await UserModel.findById(id);
 
         if (!user) {
-          throw new Error("Couldn't find user by ID while creating map");
+          return;
         }
 
         return {
@@ -41,14 +42,56 @@ const getFriends = expressAsyncHandler(async (req: Request, res: Response) => {
       }),
     });
   } catch (error) {
-    console.log(error);
-    throw new Error("An unknown error occured while grabbing friend data");
+    console.error(error);
+    res.status(401);
+    throw new Error(error as string);
   }
-
-  res.json({ message: "Get friends hit!" });
 });
 
-const getPendingFriendRequests = expressAsyncHandler(async () => {});
+const getPendingFriendRequests = expressAsyncHandler(
+  async (req: Request, res: Response) => {
+    try {
+      const token = req.cookies.token;
+
+      const decodedToken: Token = jwt.verify(
+        token,
+        process.env.JWT_SECRET as string
+      ) as Token;
+
+      const user = await UserModel.findById(decodedToken.user);
+
+      if (!user) {
+        throw new Error("User not found with token");
+      }
+
+      // res.status(200).json({ hello: "d" });
+
+      // .map immediatley returns the promise while it is pending, Promise.all returns an array of all RESOLVED promises once they are ready to resolve.
+      const friendRequests = await Promise.all(
+        user.friendRequests.map(async (id: string) => {
+          const user = await UserModel.findById(id);
+
+          if (!user) {
+            return;
+          }
+
+          return {
+            username: user.username,
+            profilePicture: user.profilePicture,
+            _id: user.id,
+          };
+        })
+      );
+
+      // .filter retudn all items that are not null values including "undefined".
+      res.status(200).json(friendRequests.filter(Boolean));
+    } catch (error) {
+      console.error(error);
+      res.status(401);
+      throw new Error(error as string);
+    }
+  }
+);
 
 const findUsers = expressAsyncHandler(async (req: Request, res: Response) => {
   try {
@@ -95,9 +138,10 @@ const findUsers = expressAsyncHandler(async (req: Request, res: Response) => {
       res.status(200).json({ result: parsedUsers });
     }
   } catch (error) {
-    console.log(error);
-    throw new Error("An unknown error occured while searching for users.");
+    console.error(error);
+    res.status(401);
+    throw new Error(error as string);
   }
 });
 
-module.exports = { getFriends, findUsers };
+module.exports = { getFriends, findUsers, getPendingFriendRequests };

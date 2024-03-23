@@ -7,13 +7,25 @@ import FriendItem from "./FriendItem";
 import SearchBar from "./Searchbar";
 import AddFriend from "./AddFriend";
 
+interface FriendItem {
+  username: string;
+  profilePicture: string;
+  _id: string;
+}
+
 const DashboardFriends = () => {
   const getFriends = useQuery({
     queryKey: ["getFriends"],
     queryFn: () => {
-      return axios.get("localhost:3000/api/user/friends");
+      return axios.get("http://localhost:3000/api/user/friends");
     },
-    retry: 1,
+  });
+
+  const getFriendRequests = useQuery({
+    queryKey: ["getFriendRequests"],
+    queryFn: () => {
+      return axios.get("http://localhost:3000/api/user/getFriendRequests");
+    },
   });
 
   const onSearchBarValueChange = (
@@ -25,12 +37,13 @@ const DashboardFriends = () => {
       {/* Map o  friends list */}
       <SearchBar onChange={onSearchBarValueChange} />
       <AddFriend />
-      <FriendItem />
 
       <p>Friends</p>
       {/* {getFriends.data?.data.friends.map((id: string) => {})} */}
-      <p>Requests</p>
       <p>Requested Recieved</p>
+      {getFriendRequests.data?.data.map((item: FriendItem) => {
+        return <FriendItem item={item} />;
+      })}
     </div>
   );
 };

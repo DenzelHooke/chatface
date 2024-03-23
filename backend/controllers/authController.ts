@@ -21,6 +21,10 @@ const register = asyncHandler(async (req: Request, res: any) => {
     throw new Error("Mising body data!");
   }
 
+  if (password1 != password2) {
+    throw new Error("Passwords do not match");
+  }
+
   const usernameExists = await userModel.findOne<IUser>({
     username,
   });
@@ -45,6 +49,7 @@ const register = asyncHandler(async (req: Request, res: any) => {
 
   // Hash password with salt
   const hashedPass = await bcrypt.hash(password1, salt);
+
   let newUser: any;
 
   try {
@@ -52,10 +57,13 @@ const register = asyncHandler(async (req: Request, res: any) => {
       username: username,
       email: email,
       password: hashedPass,
+      profilePicture:
+        "https://images.pexels.com/photos/1851164/pexels-photo-1851164.jpeg?auto=compress&cs=tinysrgb&w=600&h=450&dpr=1",
     });
   } catch (error) {
+    console.error(error);
     res.status(401);
-    throw new Error("Invalid user data");
+    throw new Error(error as string);
   }
 
   res.status(201).json({
@@ -64,46 +72,54 @@ const register = asyncHandler(async (req: Request, res: any) => {
 });
 
 const login = asyncHandler(async (req: Request, res: Response) => {
-  const { username, password } = req.body;
-  const cookie = new Cookies(req, res);
+  try {
+    const { username, password } = req.body;
+    const cookie = new Cookies(req, res);
 
-  // If either field isnt included, reject user
-  if (!username || !password) {
-    res.status(401);
-    throw new Error("Username and password required.");
-  }
+    // If either field isnt included, reject user
+    if (!username || !password) {
+      res.status(401);
+      throw new Error("Username and password required.");
+    }
 
-  // Check if user exists
-  const exists = await userModel.findOne({ username: username });
+    // Check if user exists
+    const exists = await userModel.findOne({ username: username });
 
-  // If not account, reject user
-  if (!exists) {
-    res.status(401);
-    throw new Error(
-      "The email address you entered is not associated with any account."
+    // If not account, reject user
+    if (!exists) {
+      res.status(401);
+      throw new Error(
+        "The email address you entered is not associated with any account."
+      );
+    }
+
+    // Validate password
+
+    const passwordValid = await bcrypt.compare(password, exists.password);
+
+    if (passwordValid === false) {
+      res.status(401);
+      throw new Error(
+        "The provided credentials are incorrect. Please try again."
+      );
+    }
+
+    // Generate jwt
+    const token = await jwt.sign(
+      {
+        user: exists.id,
+      },
+      process.env.JWT_SECRET as string
     );
+
+    res.cookie("token", token);
+
+    res.status(200).json({ message: "Hello World" });
+  } catch (error) {
+    console.error(error);
+    res.status(401);
+    throw new Error(error as string);
   }
-
-  // Validate password
-
-  const passwordValid = await bcrypt.compare(password, exists.password);
-  if (!passwordValid) {
-    throw new Error(
-      "The provided credentials are incorrect. Please try again."
-    );
-  }
-
-  // Generate jwt
-  const token = await jwt.sign(
-    {
-      user: exists.id,
-    },
-    process.env.JWT_SECRET as string
-  );
-
-  res.cookie("token", token);
-
-  res.status(200).json({ message: "Hello World" });
 });
 
 module.exports = {

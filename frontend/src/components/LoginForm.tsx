@@ -58,9 +58,9 @@ const LoginForm = () => {
         data
       );
 
-      if (res.data) {
+      if (res.status === 200 && res.data) {
         dispatch(setSuccess("Login Successful"));
-        setTimeout(() => navigate("/dashboard"), 1000);
+        setTimeout(() => navigate("/dashboard"), 500);
       }
     } catch (error: any) {
       dispatch(setToastError(error.response.data.message));

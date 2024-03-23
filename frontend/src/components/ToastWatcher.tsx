@@ -11,6 +11,7 @@ const ToastWatcher = () => {
 
   useEffect(() => {
     if (error) {
+      console.log(error);
       toast.error(`${errorMessage}`);
     }
 

@@ -70,9 +70,9 @@ const RegisterForm = () => {
         data
       );
 
-      if (res.data) {
-        dispatch(setSuccess("Account Created"));
-        setTimeout(() => navigate("/login"), 1000);
+      if (res.status === 200 && res.data) {
+        dispatch(setSuccess("Account Created Succesfully"));
+        setTimeout(() => navigate("/login"), 500);
       }
     } catch (error: any) {
       dispatch(setToastError(error.response.data.message));
