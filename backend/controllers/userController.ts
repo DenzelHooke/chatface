@@ -64,8 +64,6 @@ const getPendingFriendRequests = expressAsyncHandler(
         throw new Error("User not found with token");
       }
 
-      // res.status(200).json({ hello: "d" });
-
       // .map immediatley returns the promise while it is pending, Promise.all returns an array of all RESOLVED promises once they are ready to resolve.
       const friendRequests = await Promise.all(
         user.friendRequests.map(async (id: string) => {
@@ -143,5 +141,10 @@ const findUsers = expressAsyncHandler(async (req: Request, res: Response) => {
     throw new Error(error as string);
   }
 });
+
+
+const getChat = expressAsyncHandler(async (req: Request, res: Response) => {
+  const token = jwt.decode(req.cookies.token)
+})
 
 module.exports = { getFriends, findUsers, getPendingFriendRequests };

@@ -47,4 +47,6 @@ const DashboardFriends = () => {
     </div>
   );
 };
+
+
 export default DashboardFriends;
