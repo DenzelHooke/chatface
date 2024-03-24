@@ -40,7 +40,7 @@ const AddFriend = () => {
       </Modal>
 
       <button
-        className="text-center hover:bg-lightBlue bg-lighterBlue text-white font-normal w-full
+        className="text-center hover:bg-lighterBlue bg-lightBlue text-white font-medium w-full
       py-1 px-2 rounded-[5px] mb-10"
         onClick={onClick}
       >

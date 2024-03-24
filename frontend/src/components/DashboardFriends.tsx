@@ -38,15 +38,11 @@ const DashboardFriends = () => {
       <SearchBar onChange={onSearchBarValueChange} />
       <AddFriend />
 
-      <p>Friends</p>
-      {/* {getFriends.data?.data.friends.map((id: string) => {})} */}
-      <p>Requested Recieved</p>
       {getFriendRequests.data?.data.map((item: FriendItem) => {
         return <FriendItem item={item} />;
       })}
     </div>
   );
 };
-
 
 export default DashboardFriends;

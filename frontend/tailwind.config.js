@@ -23,6 +23,7 @@ export default {
         borderGrey: "#EEEEEE",
         darkBlack: "#303030",
       },
+      lightGrey: "#F5F5F5",
     },
   },
   plugins: [],
