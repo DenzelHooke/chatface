@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { RequestModifed } from "../types/types";
+import { RequestModifed, Token } from "../types/types";
 
 export const verifyRequest = (
   req: RequestModifed,
@@ -12,7 +12,10 @@ export const verifyRequest = (
     const codedToken = req.cookies.token;
 
     // Verify token
-    const verified = jwt.verify(codedToken, process.env.JWT_SECRET as string);
+    const verified: Token = jwt.verify(
+      codedToken,
+      process.env.JWT_SECRET as string
+    ) as Token;
 
     if (!verified) {
       throw new Error("Token provided is invalid");
