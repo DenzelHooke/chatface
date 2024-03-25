@@ -21,7 +21,7 @@ export default {
         lightGrey: "#F5F5F5",
         darkGrey: "#696969",
         borderGrey: "#EEEEEE",
-        darkBlack: "#303030",
+        darkBlack: "#181818",
       },
       lightGrey: "#F5F5F5",
     },

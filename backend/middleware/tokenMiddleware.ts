@@ -1,20 +1,28 @@
-import { Request, Response, NextFunction } from "express"
-import jwt from "jsonwebtoken"
+import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
+import { RequestModifed } from "../types/types";
 
-
-export const verifyRequest = (req: Request, res: Response, next: NextFunction) => {
-    console.log("Verifying user: ", req.cookies)
-    const codedToken = req.cookies.token
+export const verifyRequest = (
+  req: RequestModifed,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    console.log("Verifying user: ", req.cookies);
+    const codedToken = req.cookies.token;
 
     // Verify token
-    const verified = jwt.verify(codedToken, process.env.JWT_SECRET as string)
+    const verified = jwt.verify(codedToken, process.env.JWT_SECRET as string);
 
-
-    if(!verified) {
-        throw new Error("Token provided is invalid")
+    if (!verified) {
+      throw new Error("Token provided is invalid");
     }
 
     // Pass request off to next function
-    // Passes request off to next function/middleware  
-    next()
-}
+    // Passes request off to next function/middleware
+    req.token = verified;
+    next();
+  } catch (error) {
+    res.status(401).json({ message: "Unauthorized" });
+  }
+};

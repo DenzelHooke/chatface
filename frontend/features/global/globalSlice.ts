@@ -6,6 +6,9 @@ export interface GlobalState {
   errorMessage: string | null;
   success: boolean;
   successMessage: string | null;
+  roomName: string | null;
+  fetchRoom: boolean;
+  type: string | null;
 }
 
 const initialState: GlobalState = {
@@ -13,7 +16,16 @@ const initialState: GlobalState = {
   errorMessage: null,
   success: false,
   successMessage: null,
+  roomName: null,
+  fetchRoom: false,
+  type: null,
 };
+
+interface RoomAction {
+  type: string;
+  roomName: string;
+  _id: string;
+}
 
 export const globalSlice = createSlice({
   name: "global",
@@ -28,15 +40,25 @@ export const globalSlice = createSlice({
       state.success = true;
       state.successMessage = action.payload;
     },
+    setRoom: (state, action: PayloadAction<RoomAction>) => {
+      state.roomName = action.payload.roomName;
+    },
+    setFetchRoom: (state, action: PayloadAction<boolean>) => {
+      state.fetchRoom = action.payload;
+    },
     reset: (state) => {
       state.error = false;
       state.errorMessage = null;
       state.success = false;
       state.successMessage = null;
     },
+    resetRoom: (state) => {
+      state.roomName = null;
+    },
   },
 });
 
-export const { setError, setSuccess, reset } = globalSlice.actions;
+export const { setError, setSuccess, setRoom, setFetchRoom, reset } =
+  globalSlice.actions;
 
 export default globalSlice.reducer;
