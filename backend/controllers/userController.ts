@@ -3,7 +3,7 @@ import { IUser } from "../models/UserModel";
 import Cookies from "cookies";
 import jwt from "jsonwebtoken";
 import { hasNoFriendRequests } from "../helpers/helpers";
-import { Request, Response } from "express";
+import e, { Request, Response } from "express";
 import expressAsyncHandler from "express-async-handler";
 import { RequestModifed, Token } from "../types/types";
 import { AcceptRequestDto } from "../dto/dto";
@@ -203,6 +203,40 @@ export const acceptFriendRequest = expressAsyncHandler(
       throw new Error(
         "An unknown error occurred while attempting to accept friend request"
       );
+    }
+  }
+);
+
+export const deleteFriend = expressAsyncHandler(
+  async (req: RequestModifed, res: Response) => {
+    try {
+      console.log(req.params);
+      const token: Token = req.token;
+      const userID = token.user;
+      const recipientID = req.params.id;
+      const user = await UserModel.findById(userID);
+      const recipient = await UserModel.findById(recipientID);
+
+      if (!user) {
+        throw new Error("User not found!");
+      }
+
+      if (!recipient) {
+        throw new Error("Recipient not found!");
+      }
+
+      // Deletes recipient from user table
+      user.friends = user?.friends.filter((id) => id != recipientID);
+
+      // Deletes user from recipient table
+      recipient.friends = recipient?.friends.filter((id) => id != userID);
+
+      await user.save();
+      await recipient.save();
+
+      res.status(201).json({ message: "Friend removed" });
+    } catch (error) {
+      throw new Error("Something went wrong while attempting to delete friend");
     }
   }
 );

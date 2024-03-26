@@ -4,6 +4,7 @@ const {
   findUsers,
   getPendingFriendRequests,
   acceptFriendRequest,
+  deleteFriend,
 } = require("../controllers/userController");
 import { verifyRequest } from "../middleware/tokenMiddleware";
 const router = express.Router();
@@ -13,6 +14,8 @@ const router = express.Router();
 router.get("/friends", verifyRequest, getFriends);
 
 router.post("/friends", verifyRequest, acceptFriendRequest);
+
+router.delete("/friends/:id", verifyRequest, deleteFriend);
 
 router.post("/findFriends", verifyRequest, findUsers);
 

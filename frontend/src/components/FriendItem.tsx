@@ -35,11 +35,19 @@ const FriendItem = ({
   // TODO Implement framer motion to add on click animation
   return (
     <div
-      className={`p-2 flex space-x-2 shadow-lg rounded-[4px] border-borderGrey border bg-white ${
+      className={`p-2 flex space-x-2 shadow-lg rounded-[4px] border-borderGrey border bg-white relative${
         !disabled ? "hover:bg-gray-50 transition-all hover:cursor-pointer" : ""
       }`}
       onClick={() => onClick(item._id)}
     >
+      {!isRequestMode && (
+        <div
+          className="bg-red-500 text-white font-bold p-4 rounded-full absolute right-[-10px] top-[-10px] w-5 h-5 flex justify-center items-center cursor-pointer hover:bg-red-600 transition-all"
+          onClick={() => onDelete(item._id)}
+        >
+          X
+        </div>
+      )}
       <img
         src={item.profilePicture}
         alt="Profile picture"

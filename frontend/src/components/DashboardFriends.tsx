@@ -13,8 +13,12 @@ interface FriendItem {
   profilePicture: string;
   _id: string;
 }
+const queryInterval = 5 * 1000;
 
-const generateFriendsArray = (response: ResponseQueryObject) => {
+const generateFriendsArray = (
+  response: ResponseQueryObject,
+  deleteMutate: any
+) => {
   return response.data.result.map((item: FriendItem) => {
     return (
       <FriendItem
@@ -22,7 +26,7 @@ const generateFriendsArray = (response: ResponseQueryObject) => {
         disabled={true}
         isRequestMode={false}
         onAccept={() => ""}
-        onDelete={() => ""}
+        onDelete={deleteMutate}
       />
     );
   });
@@ -53,6 +57,7 @@ const DashboardFriends = () => {
     queryFn: () => {
       return axios.get("http://localhost:3000/api/user/friends");
     },
+    refetchInterval: queryInterval,
   });
 
   const getFriendRequests = useQuery({
@@ -84,6 +89,28 @@ const DashboardFriends = () => {
     },
   });
 
+  const deleteFriendMutation = useMutation({
+    mutationKey: ["deleteFriend"],
+    mutationFn: (id: string) => {
+      const data: AcceptRequestDto = {
+        id,
+      };
+      return axios.delete(`http://localhost:3000/api/user/friends/${data.id}`);
+    },
+    onSuccess: () => {
+      console.log("success!");
+      getFriends.refetch();
+      getFriendRequests.refetch();
+    },
+    onError: (error) => {
+      dispatch(
+        setError(
+          "Something went fatally wrong while attempting to remove friend"
+        )
+      );
+    },
+  });
+
   const onSearchBarValueChange = (
     data: React.ChangeEvent<HTMLInputElement>
   ) => {};
@@ -96,7 +123,7 @@ const DashboardFriends = () => {
 
       <p className="font-bold text-blue-500">Friends</p>
       {getFriends.data?.data
-        ? generateFriendsArray(getFriends.data)
+        ? generateFriendsArray(getFriends.data, deleteFriendMutation.mutate)
         : "Ha ha, you have no friends"}
 
       <p className="font-bold text-green-500">Pending Requests</p>
