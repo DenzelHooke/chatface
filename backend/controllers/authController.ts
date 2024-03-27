@@ -83,7 +83,9 @@ const login = asyncHandler(async (req: Request, res: Response) => {
     }
 
     // Check if user exists
-    const exists = await userModel.findOne({ username: username });
+    const exists = await userModel.findOne<IUser>({
+      username: { $regex: new RegExp(`^${username}$`, "i") },
+    });
 
     // If not account, reject user
     if (!exists) {
