@@ -9,6 +9,7 @@ export interface GlobalState {
   roomName: string | null;
   fetchRoom: boolean;
   type: string | null;
+  recipientID: string | null;
 }
 
 const initialState: GlobalState = {
@@ -19,6 +20,7 @@ const initialState: GlobalState = {
   roomName: null,
   fetchRoom: false,
   type: null,
+  recipientID: null,
 };
 
 interface RoomAction {
@@ -42,6 +44,8 @@ export const globalSlice = createSlice({
     },
     setRoom: (state, action: PayloadAction<RoomAction>) => {
       state.roomName = action.payload.roomName;
+      state.type = action.payload.type;
+      state.recipientID = action.payload._id;
     },
     setFetchRoom: (state, action: PayloadAction<boolean>) => {
       state.fetchRoom = action.payload;

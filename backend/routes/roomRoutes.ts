@@ -7,7 +7,7 @@ const router = express.Router();
 
 // /api/room/user/
 router.get("/user", verifyRequest, getChatData);
-router.post("/create", verifyRequest, initRoom);
+router.post("/init", verifyRequest, initRoom);
 
 module.exports = router;
 

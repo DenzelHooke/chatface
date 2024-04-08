@@ -60,7 +60,7 @@ app.get("/", (req: Request, res: Response) => {
 
 // TODO Verify  connection
 
-const io = new Server(httpServer, {
+export const io = new Server(httpServer, {
   cors: {
     origin: "http://localhost:5173",
     credentials: true,

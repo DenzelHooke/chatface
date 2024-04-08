@@ -23,7 +23,7 @@ const generateFriendsArray = (
     return (
       <FriendItem
         item={item}
-        disabled={true}
+        disabled={false}
         isRequestMode={false}
         onAccept={() => ""}
         onDelete={deleteMutate}

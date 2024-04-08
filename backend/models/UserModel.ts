@@ -10,6 +10,7 @@ export interface IUser extends Document {
   friendRequestsSent: Array<string>;
   roomsJoined: Array<string>;
   roomsCreated: Array<string>;
+  rooms: Array<string>;
 }
 
 const userSchema: Schema = new Schema({
@@ -51,6 +52,11 @@ const userSchema: Schema = new Schema({
     unique: [false],
   },
   roomsCreated: {
+    type: Array,
+    required: [false],
+    unique: [false],
+  },
+  rooms: {
     type: Array,
     required: [false],
     unique: [false],

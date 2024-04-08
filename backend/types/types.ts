@@ -10,3 +10,9 @@ export interface Token {
 export interface RequestModifed extends Request {
   token?: any;
 }
+
+export interface Message {
+  user: string;
+  message: string;
+  timestamp: string;
+}

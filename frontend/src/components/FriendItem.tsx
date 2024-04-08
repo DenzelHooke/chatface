@@ -35,7 +35,7 @@ const FriendItem = ({
   // TODO Implement framer motion to add on click animation
   return (
     <div
-      className={`p-2 flex space-x-2 shadow-lg rounded-[4px] border-borderGrey border bg-white relative${
+      className={`p-2 flex space-x-2 shadow-lg rounded-[4px] border-borderGrey border bg-white relative ${
         !disabled ? "hover:bg-gray-50 transition-all hover:cursor-pointer" : ""
       }`}
       onClick={() => onClick(item._id)}

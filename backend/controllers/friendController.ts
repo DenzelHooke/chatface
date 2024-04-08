@@ -1,26 +1,24 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import expressAsyncHandler from "express-async-handler";
 import UserModel from "../models/UserModel";
-import jwt from "jsonwebtoken";
+import RoomModel from "../models/RoomModel";
+
 import { hasNoFriendRequests } from "../helpers/helpers";
 import { Token } from "../types/types";
+import { RequestModifed } from "../types/types";
 
 interface AddFriendDto {
   id: string;
 }
 
 export const addFriend = expressAsyncHandler(
-  async (req: Request, res: Response) => {
+  async (req: RequestModifed, res: Response) => {
     try {
       const data: AddFriendDto = req.body;
       const senderToken = req.cookies.token;
       const recipientID = data.id;
-
-      // Verify if token is unmodified/valid
-      const token: Token = jwt.verify(
-        senderToken,
-        process.env.JWT_SECRET as string
-      ) as Token;
+      const token: Token = req.token;
+      const senderID = token.user;
 
       // Raise error if token has been modified
       if (!token) {
@@ -58,9 +56,20 @@ export const addFriend = expressAsyncHandler(
       // Push recipient id to show that sender sent friend request to recipient
       sender.friendRequestsSent.push(recipient.id);
 
+      // Create room
+      const roomID = recipientID + senderID;
+      sender.rooms.push(roomID);
+      recipient.rooms.push(roomID);
+
       // Save changes
       await recipient.save();
       await sender.save();
+
+      const room = await RoomModel.create({
+        roomID: roomID,
+      });
+
+      room.save();
 
       res.status(200).json({
         message: "Friend request sent",

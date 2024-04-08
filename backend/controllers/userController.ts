@@ -226,10 +226,20 @@ export const deleteFriend = expressAsyncHandler(
       }
 
       // Deletes recipient from user table
-      user.friends = user?.friends.filter((id) => id != recipientID);
+      user.friends = user?.friends.filter((id: string) => id != recipientID);
 
       // Deletes user from recipient table
-      recipient.friends = recipient?.friends.filter((id) => id != userID);
+      recipient.friends = recipient?.friends.filter(
+        (id: string) => id != userID
+      );
+
+      user.rooms = user.rooms.filter(
+        (roomID: string) => !roomID.split(recipientID)
+      );
+
+      recipient.rooms = recipient.rooms.filter(
+        (roomID: string) => !roomID.split(userID)
+      );
 
       await user.save();
       await recipient.save();

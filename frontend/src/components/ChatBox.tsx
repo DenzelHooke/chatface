@@ -13,22 +13,28 @@ interface RoomData {
 }
 
 const initRoom = async (id: string) => {
-  return await axios.post("http://localhost:3000/api/room/create", {
-    recipient: "",
+  return await axios.post("http://localhost:3000/api/room/init", {
+    recipient: id,
   });
 };
 
 const ChatBox = () => {
-  const { roomName, fetchRoom } = useSelector(
+  const { roomName, fetchRoom, recipientID } = useSelector(
     (state: RootState) => state.global
   );
   const dispatch = useDispatch();
   let socket;
 
   useEffect(() => {
-    if (fetchRoom && roomName) {
+    if (fetchRoom) {
       // TODO Fetch room data
-      initRoom("testID");
+
+      if (!roomName || !recipientID) {
+        console.error("No roomname found!");
+        return;
+      }
+
+      initRoom(recipientID);
       // Create room ID if not created already
 
       // TODO Initiate websocket connection
@@ -37,9 +43,6 @@ const ChatBox = () => {
         reconnectionDelayMax: 10000,
         auth: {
           token: "123",
-        },
-        query: {
-          "my-key": "my-value",
         },
       });
 
