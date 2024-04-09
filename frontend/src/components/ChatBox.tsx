@@ -7,6 +7,7 @@ import Messages from "./chat/Messages";
 import { io } from "socket.io-client";
 import { setFetchRoom } from "../../features/global/globalSlice";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 interface RoomData {
   type: "single";
@@ -42,7 +43,7 @@ const ChatBox = () => {
       socket = io("http://localhost:3000", {
         reconnectionDelayMax: 10000,
         auth: {
-          token: "123",
+          token: Cookies.get("token"),
         },
       });
 

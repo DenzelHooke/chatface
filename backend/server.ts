@@ -1,12 +1,12 @@
 import dotenv from "dotenv";
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 import express, { Express, Request, Response } from "express";
 import { Server } from "socket.io";
 import { createServer } from "http";
+import cors from "cors";
+import errorHandler from "./middleware/errorMiddleware";
+import cookieParser from "cookie-parser";
 
-const cors = require("cors");
-const { errorHandler } = require("./middleware/errorMiddleware.ts");
-const cookieParser = require("cookie-parser");
 const app: Express = express();
 const port: Number = 3000;
 
@@ -23,7 +23,7 @@ const connectDB = async () => {
       console.log(valid);
       throw new Error();
     }
-    await mongoose.connect(process.env.MONGO_DB_URI);
+    await mongoose.connect(process.env.MONGO_DB_URI as string);
 
     console.log(`Connected to Mongo cluster: ${mongoose.connection.host}`);
   } catch (error) {
@@ -68,6 +68,7 @@ export const io = new Server(httpServer, {
 });
 
 io.on("connection", (socket) => {
+  console.log(socket.handshake);
   console.log("SOCKET CONNECTED");
 });
 
