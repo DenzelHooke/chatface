@@ -16,3 +16,8 @@ export interface Message {
   message: string;
   timestamp: string;
 }
+
+export interface RoomData {
+  roomID: string;
+  messages: Message[];
+}

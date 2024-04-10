@@ -6,6 +6,8 @@ import { createServer } from "http";
 import cors from "cors";
 import errorHandler from "./middleware/errorMiddleware";
 import cookieParser from "cookie-parser";
+import { findRoom, verifyJwt } from "./helpers/helpers";
+import { RoomData } from "./types/types";
 
 const app: Express = express();
 const port: Number = 3000;
@@ -67,9 +69,24 @@ export const io = new Server(httpServer, {
   },
 });
 
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
   console.log(socket.handshake);
   console.log("SOCKET CONNECTED");
+  const userToken = verifyJwt(socket.handshake.auth.token);
+  if (!userToken) {
+    console.error("**INVALID JWT WHILE CONNECTING SOCKET. USER DISCONNECTED**");
+    socket.disconnect();
+    return;
+  }
+
+  console.log(socket.handshake.query);
+
+  await findRoom(
+    userToken.user,
+    socket.handshake.query.recipient as string
+  ).then((roomData) => {
+    socket.join(roomData?.roomID as string);
+  });
 });
 
 httpServer.listen(port as number, () => {

@@ -42,6 +42,9 @@ const ChatBox = () => {
 
       socket = io("http://localhost:3000", {
         reconnectionDelayMax: 10000,
+        query: {
+          recipient: recipientID,
+        },
         auth: {
           token: Cookies.get("token"),
         },
