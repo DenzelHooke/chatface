@@ -1,10 +1,10 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { RootState } from "../../app/store";
 import RoomInfo from "./chat/RoomInfo";
 import { MessageInput } from "./chat/MessageInput";
 import Messages from "./chat/Messages";
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import { setFetchRoom } from "../../features/global/globalSlice";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -13,18 +13,36 @@ interface RoomData {
   type: "single";
 }
 
-const initRoom = async (id: string) => {
-  return await axios.post("http://localhost:3000/api/room/init", {
-    recipient: id,
-  });
-};
+// const initRoom = async (id: string) => {
+//   return await axios.post("http://localhost:3000/api/room/init", {
+//     recipient: id,
+//   });
+// };
 
 const ChatBox = () => {
   const { roomName, fetchRoom, recipientID } = useSelector(
     (state: RootState) => state.global
   );
+  const [socket, setSocket] = useState<Socket | null>(null);
+
   const dispatch = useDispatch();
-  let socket;
+  const [submitMessage, setSubmitMessage] = useState(false);
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState<string[]>([]);
+
+  const onSubmit = (message: string) => {
+    setSubmitMessage(true);
+    setMessage(message);
+  };
+
+  useEffect(() => {
+    if (submitMessage && socket) {
+      // console.log(message);
+      socket.emit("chatMessage", { message: message });
+      setMessage("");
+      setSubmitMessage(false);
+    }
+  }, [submitMessage]);
 
   useEffect(() => {
     if (fetchRoom) {
@@ -35,12 +53,11 @@ const ChatBox = () => {
         return;
       }
 
-      initRoom(recipientID);
-      // Create room ID if not created already
+      // initRoom(recipientID);
 
       // TODO Initiate websocket connection
 
-      socket = io("http://localhost:3000", {
+      const newSocket = io("http://localhost:3000", {
         reconnectionDelayMax: 10000,
         query: {
           recipient: recipientID,
@@ -51,14 +68,20 @@ const ChatBox = () => {
       });
 
       // Handle connection errors
-      socket.on("error", (error) => {
+      newSocket.on("error", (error: any) => {
         console.error("WebSocket connection error:", error);
       });
 
       // Handle disconnection
-      socket.on("disconnect", () => {
+      newSocket.on("disconnect", () => {
         console.log("WebSocket disconnected");
       });
+
+      newSocket.on("chatMessage", (data: { message: string }) => {
+        setMessages((prevState) => [...prevState, data.message]);
+      });
+
+      setSocket(newSocket);
 
       dispatch(setFetchRoom(false));
     }
@@ -69,9 +92,9 @@ const ChatBox = () => {
     <div className="bg-white flex-grow max-w-full border-[1px] border-borderGrey p-5 rounded-md grid grid-cols-1 gap-0 grid-rows-[80px_1fr_85px]">
       <RoomInfo currentRoom={roomName} />
 
-      <Messages />
+      <Messages messages={messages} />
 
-      <MessageInput />
+      <MessageInput onSubmit={onSubmit} />
     </div>
   );
 };

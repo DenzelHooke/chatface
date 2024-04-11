@@ -18,7 +18,6 @@ const Input = ({
   error,
   ...props
 }: propTypes) => {
-  console.log(props);
   return (
     <>
       <div className="flex flex-col">

@@ -8,6 +8,7 @@ import errorHandler from "./middleware/errorMiddleware";
 import cookieParser from "cookie-parser";
 import { findRoom, verifyJwt } from "./helpers/helpers";
 import { RoomData } from "./types/types";
+import { Socket } from "socket.io";
 
 const app: Express = express();
 const port: Number = 3000;
@@ -69,8 +70,11 @@ export const io = new Server(httpServer, {
   },
 });
 
+const initClientJoin = (socket: Socket) => {
+  // socket.emit("init", )
+};
+
 io.on("connection", async (socket) => {
-  console.log(socket.handshake);
   console.log("SOCKET CONNECTED");
   const userToken = verifyJwt(socket.handshake.auth.token);
   if (!userToken) {
@@ -79,13 +83,16 @@ io.on("connection", async (socket) => {
     return;
   }
 
-  console.log(socket.handshake.query);
-
+  // Finds room ID based off user ID plus recipient ID.
   await findRoom(
     userToken.user,
     socket.handshake.query.recipient as string
   ).then((roomData) => {
+    // join socket to namespace
     socket.join(roomData?.roomID as string);
+    socket.on("chatMessage", async (data) => {
+      socket.to(roomData?.roomID as string).emit("chatMessage", data);
+    });
   });
 });
 
