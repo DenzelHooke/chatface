@@ -9,3 +9,9 @@ export interface ResponseQueryObject extends AxiosResponse {
 export interface AcceptRequestDto {
   id: string;
 }
+
+export interface MessageData {
+  userID: string;
+  message: string;
+  username: string;
+}

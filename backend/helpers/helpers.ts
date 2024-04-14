@@ -43,3 +43,8 @@ export const findRoom = async (token1: string, token2: string) => {
   const regex = new RegExp(`(?=.*${token1})(?=.*${token2})`);
   return await roomModel.findOne({ roomID: regex });
 };
+
+export const findUser = async (id: string) => {
+  console.log("id: ", id);
+  return await userModel.findOne({ _id: id });
+};

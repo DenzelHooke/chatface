@@ -21,3 +21,9 @@ export interface RoomData {
   roomID: string;
   messages: Message[];
 }
+
+export interface MessageData {
+  userID: string;
+  message: string;
+  username: string;
+}

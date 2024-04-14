@@ -1,6 +1,31 @@
-const Messages = ({ messages }: { messages: Array<string> }) => {
+import { useEffect } from "react";
+import Message from "./Message";
+import { MessageData } from "../../types/types";
+
+const Messages = ({
+  messages,
+  userID,
+}: {
+  messages: MessageData[];
+  userID: string | null;
+}) => {
+  // useEffect(() => {
+  //   console.log(messages);
+  // }, [messages]);
+
   return (
-    <div className="row-span-2">{messages.map((item) => `${item}\n`)}</div>
+    <div className="row-span-2 scroll-auto max-h-full">
+      <>
+        {messages.map((item) => (
+          <Message
+            body={item.message}
+            name={item.username}
+            profile="D"
+            isSender={item.userID === userID}
+          />
+        ))}
+      </>
+    </div>
   );
 };
 export default Messages;

@@ -8,6 +8,7 @@ import { io, Socket } from "socket.io-client";
 import { setFetchRoom } from "../../features/global/globalSlice";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { MessageData } from "../types/types";
 
 interface RoomData {
   type: "single";
@@ -24,11 +25,12 @@ const ChatBox = () => {
     (state: RootState) => state.global
   );
   const [socket, setSocket] = useState<Socket | null>(null);
+  const [userID, setUserID] = useState<string | null>(null);
 
   const dispatch = useDispatch();
   const [submitMessage, setSubmitMessage] = useState(false);
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<string[]>([]);
+  const [messages, setMessages] = useState<MessageData[]>([]);
 
   const onSubmit = (message: string) => {
     setSubmitMessage(true);
@@ -77,8 +79,12 @@ const ChatBox = () => {
         console.log("WebSocket disconnected");
       });
 
-      newSocket.on("chatMessage", (data: { message: string }) => {
-        setMessages((prevState) => [...prevState, data.message]);
+      newSocket.on("chatMessage", (data: MessageData) => {
+        setMessages((prevState) => [...prevState, data]);
+      });
+
+      newSocket.on("init", (data: { userID: string }) => {
+        setUserID(data.userID);
       });
 
       setSocket(newSocket);
@@ -92,7 +98,7 @@ const ChatBox = () => {
     <div className="bg-white flex-grow max-w-full border-[1px] border-borderGrey p-5 rounded-md grid grid-cols-1 gap-0 grid-rows-[80px_1fr_85px]">
       <RoomInfo currentRoom={roomName} />
 
-      <Messages messages={messages} />
+      <Messages messages={messages} userID={userID} />
 
       <MessageInput onSubmit={onSubmit} />
     </div>
