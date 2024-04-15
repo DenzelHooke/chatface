@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "backend": "nodemon ./backend/server.ts",
-    "client": "cd ./frontend && npm run dev",
+    "client": "cd ./frontend && npm run dev -- --host",
     "dev": "concurrently \"npm run backend\" \"npm run client\" "
   },
   "author": "Denzel Hooke",
