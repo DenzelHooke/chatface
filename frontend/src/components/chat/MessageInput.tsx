@@ -1,4 +1,4 @@
-import { ChangeEventHandler } from "react";
+import { ChangeEventHandler, useEffect } from "react";
 import Input from "../Input";
 import { SubmitHandler, useForm } from "react-hook-form";
 
@@ -8,22 +8,33 @@ interface FormFields {
 
 export const MessageInput = ({
   onSubmit,
+  onChange,
 }: {
   onSubmit: (data: any) => void;
+  onChange: () => void;
 }) => {
   const {
     register,
     handleSubmit,
     setError,
     reset,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<FormFields>();
+
+  const message = watch("message");
+
+  // Runs when user types into message field
+  useEffect(() => {
+    if (message) {
+      onChange();
+    }
+  }, [message]);
 
   const onSubmitForm: SubmitHandler<FormFields> = async (data: FormFields) => {
     reset();
     onSubmit(data.message);
   };
-
   return (
     <div className="h-[85px]">
       <form onSubmit={handleSubmit(onSubmitForm)}>

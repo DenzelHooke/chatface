@@ -8,6 +8,7 @@ type propTypes = {
   placeholder?: string;
   type?: string;
   error: FieldError | undefined;
+  onChange?: any;
 };
 
 const Input = ({

@@ -114,6 +114,12 @@ io.on("connection", async (socket) => {
     // Join socket to the room namespace
     socket.join(roomData?.roomID as string);
 
+    socket.on("isTyping", async (data: { userID: string }) => {
+      socket.to(roomData?.roomID as string).emit("isTyping", {
+        userID: data.userID,
+      } as { userID: string });
+    });
+
     // Listen for chat messages
     socket.on("chatMessage", async (data: MessageData) => {
       // Broadcast the chat message to all clients in the room

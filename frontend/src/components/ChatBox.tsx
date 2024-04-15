@@ -9,6 +9,7 @@ import { setFetchRoom } from "../../features/global/globalSlice";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { MessageData } from "../types/types";
+import { start } from "repl";
 
 interface RoomData {
   type: "single";
@@ -31,12 +32,19 @@ const ChatBox = () => {
   const [submitMessage, setSubmitMessage] = useState(false);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<MessageData[]>([]);
+  const [isTyping, setIsTyping] = useState<Boolean>(false);
+  const [friendIsTyping, setFriendIsTyping] = useState<Boolean>(false);
+  const [typingTimeout, setTypingTimeout] = useState<any>();
 
   const onSubmit = (message: string) => {
     setSubmitMessage(true);
     setMessage(message);
   };
 
+  const startTypingTimeout = () => {
+    const timeout = setTimeout(() => setFriendIsTyping(false), 2000);
+    setTypingTimeout(timeout);
+  };
   useEffect(() => {
     if (submitMessage && socket) {
       // console.log(message);
@@ -46,6 +54,18 @@ const ChatBox = () => {
     }
   }, [submitMessage]);
 
+  useEffect(() => {
+    if (isTyping && socket) {
+      socket.emit("isTyping", {
+        userID: userID,
+      });
+      setIsTyping(false);
+    }
+  }, [isTyping, socket]);
+
+  useEffect(() => {
+    setTimeout;
+  }, [friendIsTyping]);
   useEffect(() => {
     if (fetchRoom) {
       // TODO Fetch room data
@@ -87,6 +107,16 @@ const ChatBox = () => {
         setUserID(data.userID);
       });
 
+      newSocket.on("isTyping", (data: { userID: string }) => {
+        console.log("typing..");
+
+        if (typingTimeout) {
+          clearTimeout(typingTimeout);
+        }
+        setFriendIsTyping(true);
+        startTypingTimeout();
+      });
+
       setSocket(newSocket);
 
       dispatch(setFetchRoom(false));
@@ -94,13 +124,17 @@ const ChatBox = () => {
     // TODO Set up web socket listeners
   }, [roomName, fetchRoom]);
 
+  const onMessageInput = () => {
+    setIsTyping(true);
+  };
+
   return (
     <div className="bg-white flex-grow max-w-full border-[1px] border-borderGrey p-5 rounded-md grid grid-cols-1 gap-0 grid-rows-[80px_1fr_85px]">
       <RoomInfo currentRoom={roomName} />
 
       <Messages messages={messages} userID={userID} />
-
-      <MessageInput onSubmit={onSubmit} />
+      <div>{friendIsTyping && "User is typing"}</div>
+      <MessageInput onSubmit={onSubmit} onChange={onMessageInput} />
     </div>
   );
 };
