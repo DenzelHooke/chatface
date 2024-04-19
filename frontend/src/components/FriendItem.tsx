@@ -1,5 +1,3 @@
-import axios from "axios";
-import { RootState } from "../../app/store";
 import { setRoom, setFetchRoom } from "../../features/global/globalSlice";
 import { useDispatch } from "react-redux";
 

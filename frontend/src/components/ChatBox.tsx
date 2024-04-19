@@ -11,6 +11,8 @@ import Cookies from "js-cookie";
 import { MessageData } from "../types/types";
 import { start } from "repl";
 
+const SERVER_URL = import.meta.env.VITE_SERVER;
+
 interface RoomData {
   type: "single";
 }
@@ -79,7 +81,7 @@ const ChatBox = () => {
 
       // TODO Initiate websocket connection
 
-      const newSocket = io("http://localhost:3000", {
+      const newSocket = io(SERVER_URL, {
         reconnectionDelayMax: 10000,
         query: {
           recipient: recipientID,

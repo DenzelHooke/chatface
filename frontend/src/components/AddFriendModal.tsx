@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../config/axiosConfig";
 import { useMutation } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import SearchBar from "./Searchbar";
@@ -17,7 +17,7 @@ const AddFriendModal = () => {
   const { isSuccess, isError, isPending, data, mutate } = useMutation({
     mutationFn: async (value: string) => {
       // HttpOnly cookie is sent automatically with request
-      return await axios.post("http://localhost:3000/api/user/findFriends", {
+      return await axios.post("/api/user/findFriends", {
         username: value,
       });
       // Returns array with all users found matching name

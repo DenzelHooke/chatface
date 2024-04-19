@@ -5,7 +5,7 @@ import {
 } from "../types/users";
 import { v4 as uuidv4 } from "uuid";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import axios from "../config/axiosConfig";
 
 import SpinningLoader from "./utils/SpinningLoader";
 import { useState, useEffect } from "react";
@@ -21,7 +21,7 @@ const AddFriendItem = ({ item }: { item: DisplayFriendsItem }) => {
   const sendFriendRequestMutation = useMutation({
     mutationFn: async (id: string) => {
       // Send post request to add user based off user id
-      return await axios.post("http://localhost:3000/api/friends/add", {
+      return await axios.post("/api/friends/add", {
         id: id,
       });
     },

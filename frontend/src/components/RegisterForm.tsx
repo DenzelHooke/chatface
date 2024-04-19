@@ -1,6 +1,6 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import axios from "../config/axiosConfig";
 import Input from "./Input";
 import FormError from "./FormError";
 import Button from "./Button";
@@ -31,7 +31,7 @@ const RegisterForm = () => {
 
   const mutation = useMutation({
     mutationFn: (data: FormFields) => {
-      return axios.post("http://localhost:3000/api/auth/register", data);
+      return axios.post("/api/auth/register", data);
     },
   });
 
@@ -65,10 +65,7 @@ const RegisterForm = () => {
 
     try {
       //Data gets converted to object containing our fields rather than a formElement Event object.
-      const res = await axios.post(
-        "http://localhost:3000/api/auth/register",
-        data
-      );
+      const res = await axios.post("/api/auth/register", data);
 
       if (res.status === 200 && res.data) {
         dispatch(setSuccess("Account Created Succesfully"));

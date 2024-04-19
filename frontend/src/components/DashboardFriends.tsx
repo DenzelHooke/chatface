@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import axios, { AxiosResponse } from "axios";
+import axios from "../config/axiosConfig";
 import { UseDispatch, useDispatch } from "react-redux";
 import { setError, setSuccess } from "../../features/global/globalSlice";
 import FriendItem from "./FriendItem";
@@ -55,7 +55,7 @@ const DashboardFriends = () => {
   const getFriends = useQuery({
     queryKey: ["getFriends"],
     queryFn: () => {
-      return axios.get("http://localhost:3000/api/user/friends");
+      return axios.get("/api/user/friends");
     },
     refetchInterval: queryInterval,
   });
@@ -63,7 +63,7 @@ const DashboardFriends = () => {
   const getFriendRequests = useQuery({
     queryKey: ["getFriendRequests"],
     queryFn: () => {
-      return axios.get("http://localhost:3000/api/user/getFriendRequests");
+      return axios.get("/api/user/getFriendRequests");
     },
   });
 
@@ -73,7 +73,7 @@ const DashboardFriends = () => {
       const data: AcceptRequestDto = {
         id,
       };
-      return axios.post("http://localhost:3000/api/user/friends", data);
+      return axios.post("/api/user/friends", data);
     },
     onSuccess: () => {
       console.log("success!");
@@ -95,7 +95,7 @@ const DashboardFriends = () => {
       const data: AcceptRequestDto = {
         id,
       };
-      return axios.delete(`http://localhost:3000/api/user/friends/${data.id}`);
+      return axios.delete(`/api/user/friends/${data.id}`);
     },
     onSuccess: () => {
       console.log("success!");

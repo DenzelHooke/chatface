@@ -71,7 +71,7 @@ const socketDisconnect = (socket: Socket, reason: string) => {
 
 export const io = new Server(httpServer, {
   cors: {
-    // origin: ["http://localhost:5173", "http://192.168.1.94"],
+    // origin: ["http://localhost:5173/", "http://192.168.1.95"],
     origin: "*",
     credentials: true,
   },
