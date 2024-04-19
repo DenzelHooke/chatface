@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import express, { Express, Request, Response } from "express";
 import { Server } from "socket.io";
-import { createServer } from "http";
+import { METHODS, createServer } from "http";
 import cors from "cors";
 import errorHandler from "./middleware/errorMiddleware";
 import cookieParser from "cookie-parser";
@@ -11,10 +11,11 @@ import { MessageData, RoomData } from "./types/types";
 import { Socket } from "socket.io";
 
 const app: Express = express();
-const port: Number = 3000;
+const port: Number = 80;
+const origins = ["http://localhost:5173", "http://192.168.1.95:5173"];
 
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: origins,
   credentials: true,
 };
 
@@ -51,11 +52,11 @@ app.use("/api/room/", require("./routes/roomRoutes"));
 
 app.use(errorHandler);
 
-// const server = app.listen(port, () => {
-//   console.log(`Running on port ${port}`);
-// });
+const server = app.listen(3000, "0.0.0.0", () => {
+  console.log(`Running on port ${port}`);
+});
 
-const httpServer = createServer(app);
+// const httpServer = createServer(app);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello, welcome to the ChatFace API.");
@@ -69,10 +70,10 @@ const socketDisconnect = (socket: Socket, reason: string) => {
 
 // TODO Verify  connection
 
-export const io = new Server(httpServer, {
+export const io = new Server(server, {
   cors: {
-    // origin: ["http://localhost:5173/", "http://192.168.1.95"],
-    origin: "*",
+    origin: origins,
+    // origin: "*",
     credentials: true,
   },
 });
@@ -135,8 +136,4 @@ io.on("connection", async (socket) => {
     // Handle any errors that occur during room lookup or socket join
     // You may want to emit an error event to the client or perform other error handling tasks
   }
-});
-
-httpServer.listen(port as number, () => {
-  console.log("****** HTTP server listening on port:", port, "******");
 });
