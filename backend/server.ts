@@ -6,7 +6,13 @@ import { METHODS, createServer } from "http";
 import cors from "cors";
 import errorHandler from "./middleware/errorMiddleware";
 import cookieParser from "cookie-parser";
-import { findRoom, findUser, verifyJwt } from "./helpers/helpers";
+import {
+  findRoom,
+  findUser,
+  getAllMessages,
+  saveMessage,
+  verifyJwt,
+} from "./helpers/helpers";
 import { MessageData, RoomData } from "./types/types";
 import { Socket } from "socket.io";
 
@@ -24,7 +30,6 @@ const connectDB = async () => {
     const valid = dotenv.config();
 
     if (!valid) {
-      console.log(valid);
       throw new Error();
     }
     await mongoose.connect(process.env.MONGO_DB_URI as string);
@@ -94,10 +99,6 @@ io.on("connection", async (socket) => {
     return;
   }
 
-  socket.emit("init", {
-    userID: userToken.user,
-  });
-
   // Find room ID based on user ID and recipient ID
   try {
     const roomData = await findRoom(
@@ -106,7 +107,15 @@ io.on("connection", async (socket) => {
     );
 
     const user = await findUser(userToken.user);
-    console.log(user);
+
+    if (!roomData) {
+      throw new Error("No room data present");
+    }
+
+    socket.emit("init", {
+      userID: userToken.user,
+      messages: await getAllMessages(roomData.roomID),
+    });
 
     if (!user) {
       socketDisconnect(socket, "No valid user found with token");
@@ -114,10 +123,10 @@ io.on("connection", async (socket) => {
     }
 
     // Join socket to the room namespace
-    socket.join(roomData?.roomID as string);
+    socket.join(roomData.roomID as string);
 
     socket.on("isTyping", async (data: { userID: string }) => {
-      socket.to(roomData?.roomID as string).emit("isTyping", {
+      socket.to(roomData.roomID as string).emit("isTyping", {
         userID: data.userID,
       } as { userID: string });
     });
@@ -125,6 +134,9 @@ io.on("connection", async (socket) => {
     // Listen for chat messages
     socket.on("chatMessage", async (data: MessageData) => {
       // Broadcast the chat message to all clients in the room
+
+      // TODO Save message with timestamp in database
+      saveMessage(data, user, roomData.roomID);
       io.to(roomData?.roomID as string).emit("chatMessage", {
         username: user.username,
         userID: userToken.user,
@@ -133,7 +145,5 @@ io.on("connection", async (socket) => {
     });
   } catch (error) {
     console.error("Error:", error);
-    // Handle any errors that occur during room lookup or socket join
-    // You may want to emit an error event to the client or perform other error handling tasks
   }
 });

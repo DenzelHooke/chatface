@@ -12,9 +12,11 @@ export interface RequestModifed extends Request {
 }
 
 export interface Message {
-  user: string;
+  userID: string;
+  username: string;
   message: string;
-  timestamp: string;
+  timestamp: Date;
+  roomID: string;
 }
 
 export interface RoomData {

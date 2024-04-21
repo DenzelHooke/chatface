@@ -210,7 +210,6 @@ export const acceptFriendRequest = expressAsyncHandler(
 export const deleteFriend = expressAsyncHandler(
   async (req: RequestModifed, res: Response) => {
     try {
-      console.log(req.params);
       const token: Token = req.token;
       const userID = token.user;
       const recipientID = req.params.id;

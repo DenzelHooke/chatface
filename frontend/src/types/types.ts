@@ -14,4 +14,5 @@ export interface MessageData {
   userID: string;
   message: string;
   username: string;
+  timestamp?: any;
 }

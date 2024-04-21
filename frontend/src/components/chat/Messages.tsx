@@ -9,10 +9,6 @@ const Messages = ({
   messages: MessageData[];
   userID: string | null;
 }) => {
-  // useEffect(() => {
-  //   console.log(messages);
-  // }, [messages]);
-
   return (
     <div className="row-span-2 scroll-auto max-h-full">
       <>

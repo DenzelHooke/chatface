@@ -73,7 +73,6 @@ const ChatBox = () => {
       // TODO Fetch room data
 
       if (!roomName || !recipientID) {
-        console.error("No roomname found!");
         return;
       }
 
@@ -97,16 +96,29 @@ const ChatBox = () => {
       });
 
       // Handle disconnection
-      newSocket.on("disconnect", () => {
-        console.log("WebSocket disconnected");
-      });
+      newSocket.on("disconnect", () => {});
 
       newSocket.on("chatMessage", (data: MessageData) => {
         setMessages((prevState) => [...prevState, data]);
       });
 
-      newSocket.on("init", (data: { userID: string }) => {
+      newSocket.on("init", (data: { userID: string; messages: [] }) => {
         setUserID(data.userID);
+
+        const formattedData = data.messages.map(
+          (item: {
+            userID: string;
+            message: string;
+            username: string;
+            timestamp?: string;
+          }) => ({
+            userID: item.userID,
+            message: item.message,
+            username: item.username,
+          })
+        );
+
+        setMessages(formattedData);
       });
 
       newSocket.on("isTyping", (data: { userID: string }) => {

@@ -11,11 +11,7 @@ export const getChatData = expressAsyncHandler(
 
 export const initRoom = expressAsyncHandler(
   async (req: RequestModifed, res: Response) => {
-    console.log(req.body);
-
-    console.log(req.token);
     // Connect each user to namespace/room
-
     // const user = UserModel.findById();
   }
 );

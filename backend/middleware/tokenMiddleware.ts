@@ -8,7 +8,6 @@ export const verifyRequest = (
   next: NextFunction
 ) => {
   try {
-    console.log("Verifying user: ", req.cookies);
     const codedToken = req.cookies.token;
 
     // Verify token
