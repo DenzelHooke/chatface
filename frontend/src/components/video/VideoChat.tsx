@@ -9,7 +9,7 @@ import {
   RemoteUser,
   LocalVideoTrack,
 } from "agora-rtc-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
   appID: string;
@@ -17,41 +17,54 @@ interface Props {
 }
 
 const VideoChat = ({ appID, channelName }: Props) => {
+  const [cameraOn, setCameraOn] = useState(true);
+  const [microphoneOn, setMicrophoneOn] = useState(true);
+
   // Grab local client tracks.
   //@ts-ignore
-  const { isLoading: isLoadingMic, localMicrophoneTrack } =
-    useLocalMicrophoneTrack();
+  const { isLoadingMic, localMicrophoneTrack } =
+    useLocalMicrophoneTrack(microphoneOn);
   //@ts-ignore
-  const { isLoading: isLoadingCam, localCameraTrack } = useLocalCameraTrack();
+  const { isLoadingCam, localCameraTrack } = useLocalCameraTrack(cameraOn);
 
   // Array that contains all users that join the channel, updates when users leave channel.
   const remoteUsers = useRemoteUsers();
 
+  //   Joins client to channel and leaves channel when component unmounts.
+  useJoin(
+    {
+      appid: "b56d676e5b474e97b520bd702c7191a0",
+      channel: channelName,
+      token: null,
+    },
+    true
+  );
+
   //   Publish tracks when component mounts, unpublishes when component unmounts.
   usePublish([localMicrophoneTrack, localCameraTrack]);
 
-  //   Joins client to channel and leaves channel when component unmounts.
-  useJoin({
-    appid: appID,
-    channel: channelName,
-    token: null,
-  });
-
   const { audioTracks } = useRemoteAudioTracks(remoteUsers);
-
-  useEffect(() => {
-    if (audioTracks) {
-      audioTracks.forEach((track) => track.play());
-    }
-  }, [audioTracks]);
+  // audioTracks.forEach((track) => track.play());
 
   return (
     <div>
       <h2>{channelName}</h2>
-      <LocalVideoTrack track={localCameraTrack} play={true} />
-      {remoteUsers.map((user) => (
-        <RemoteUser user={user} />
-      ))}
+      <div className="flex justify-center">
+        <div className="grid grid-cols-2 gap-5 ">
+          <LocalVideoTrack track={localCameraTrack} play={true} />
+          {remoteUsers.map((user) => {
+            console.log("USER: ", user);
+            return (
+              <div
+                key={user.uid}
+                className="remote-user w-[300px] h-[300px] rounded-md overflow-hidden"
+              >
+                <RemoteUser user={user} className={`${String(user.uid)}`} />
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 };
