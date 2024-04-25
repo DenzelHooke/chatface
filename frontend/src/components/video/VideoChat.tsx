@@ -9,6 +9,18 @@ import {
   RemoteUser,
   LocalVideoTrack,
 } from "agora-rtc-react";
+import {
+  createMicrophoneAudioTrack,
+  createCameraVideoTrack,
+} from "agora-rtc-sdk-ng/esm";
+
+import type {
+  ICameraVideoTrack,
+  IMicrophoneAudioTrack,
+  IAgoraRTCClient,
+  IAgoraRTCRemoteUser,
+} from "agora-rtc-sdk-ng/esm";
+
 import { useEffect, useState } from "react";
 
 interface Props {
@@ -20,12 +32,15 @@ const VideoChat = ({ appID, channelName }: Props) => {
   const [cameraOn, setCameraOn] = useState(true);
   const [microphoneOn, setMicrophoneOn] = useState(true);
 
-  // Grab local client tracks.
-  //@ts-ignore
-  const { isLoadingMic, localMicrophoneTrack } =
-    useLocalMicrophoneTrack(microphoneOn);
-  //@ts-ignore
-  const { isLoadingCam, localCameraTrack } = useLocalCameraTrack(cameraOn);
+  let audioTrack: IMicrophoneAudioTrack;
+  let cameraTrack: ICameraVideoTrack;
+
+  const getTracks = async () => {
+    // Grab local client tracks.
+    console.log("Getting local tracks");
+    audioTrack = await createMicrophoneAudioTrack();
+    cameraTrack = await createCameraVideoTrack();
+  };
 
   // Array that contains all users that join the channel, updates when users leave channel.
   const remoteUsers = useRemoteUsers();
@@ -40,8 +55,12 @@ const VideoChat = ({ appID, channelName }: Props) => {
     true
   );
 
+  useEffect(() => {
+    getTracks();
+  }, []);
+
   //   Publish tracks when component mounts, unpublishes when component unmounts.
-  usePublish([localMicrophoneTrack, localCameraTrack]);
+  // usePublish([localMicrophoneTrack, localCameraTrack]);
 
   const { audioTracks } = useRemoteAudioTracks(remoteUsers);
   // audioTracks.forEach((track) => track.play());
@@ -51,7 +70,7 @@ const VideoChat = ({ appID, channelName }: Props) => {
       <h2>{channelName}</h2>
       <div className="flex justify-center">
         <div className="grid grid-cols-2 gap-5 ">
-          <LocalVideoTrack track={localCameraTrack} play={true} />
+          {cameraTrack && <LocalVideoTrack track={cameraTrack} play={true} />}
           {remoteUsers.map((user) => {
             console.log("USER: ", user);
             return (
