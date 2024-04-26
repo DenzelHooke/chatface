@@ -121,7 +121,7 @@ const ChatBox = () => {
     <div className="bg-white flex-grow max-w-full border-[1px] border-borderGrey p-5 rounded-md grid grid-cols-1 gap-0 grid-rows-[80px_1fr_85px]">
       <RoomInfo currentRoom={roomName} />
       <AgoraRTCProvider client={client}>
-        <VideoChat appID={APP_ID} channelName={channelName} />
+        <VideoChat appID={APP_ID} channelName={channelName} client={client} />
       </AgoraRTCProvider>
       <Messages messages={messages} userID={userID} />
       <div>{friendIsTyping && "User is typing"}</div>
