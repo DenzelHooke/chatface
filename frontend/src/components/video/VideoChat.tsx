@@ -20,6 +20,7 @@ import type {
   IMicrophoneAudioTrack,
   IAgoraRTCClient,
   IAgoraRTCRemoteUser,
+  ILocalTrack,
 } from "agora-rtc-sdk-ng/esm";
 
 import { useEffect, useState } from "react";
@@ -40,18 +41,29 @@ const VideoChat = ({ appID, channelName, client }: Props) => {
   // const [cameraTrack, setCameraTrack] = useState<null | ICameraVideoTrack>(
   //   null
   // );
-  let microphoneTrack: IMicrophoneAudioTrack;
-  let cameraTrack: ICameraVideoTrack;
+
+  const [microphoneTrack, setMicrophoneTrack] =
+    useState<IMicrophoneAudioTrack | null>();
+
+  // const [cameraTrack, setCameraTrack] = useState<ILocalTrack>();
+  let cameraTrack: ILocalTrack;
 
   const getTracks = async () => {
     // Grab local client tracks.
     console.log("Getting local tracks");
-
     try {
-      [microphoneTrack, cameraTrack] = await Promise.all([
+      client.on("user-published", onRemotePublish);
+
+      await Promise.all([
         createMicrophoneAudioTrack(),
         createCameraVideoTrack(),
-      ]);
+      ]).then((data) => {
+        console.log("Playing local camera");
+        setMicrophoneTrack(data[0]);
+        cameraTrack = data[1];
+        data[1].play("local-camera");
+        data[0].play();
+      });
     } catch (error) {
       console.error("Error retrieving tracks");
     }
@@ -62,9 +74,10 @@ const VideoChat = ({ appID, channelName, client }: Props) => {
     };
   };
 
-  const joinChannel = async () => {
+  const joinChannel = async (appID: string, channelName: string) => {
     try {
       console.log("Joining channel ", channelName);
+
       return await client.join(appID, channelName, null);
     } catch (error) {
       console.error("Error while joining channel");
@@ -74,13 +87,19 @@ const VideoChat = ({ appID, channelName, client }: Props) => {
 
   const publishTracks = async () => {
     try {
-      console.log("Publishing tracks to channel");
+      console.log(cameraTrack);
       await client.publish(cameraTrack);
-      await client.publish(microphoneTrack);
+      if (cameraTrack) {
+        console.log("Publishing camera track to channel");
+      }
+
+      // if (microphoneTrack) {
+      //   console.log("Publishing audio track to channel");
+      //   await client.publish(microphoneTrack);
+      // }
     } catch (error) {
       console.error("Error while publishing tracks");
       console.error(error);
-      console.log(microphoneTrack, cameraTrack);
     }
 
     return true;
@@ -98,13 +117,36 @@ const VideoChat = ({ appID, channelName, client }: Props) => {
   //   true
   // );
 
+  const onRemotePublish = async (
+    user: IAgoraRTCRemoteUser,
+    mediaType: "video" | "audio"
+  ) => {
+    console.log("remote user connecting!!", user, mediaType);
+    if (mediaType == "video") {
+      const remoteTrack = await client.subscribe(user, mediaType);
+      //! Generate UUID and create a new element for this remote track
+      remoteTrack.play("remote");
+    }
+
+    if (mediaType == "audio") {
+      const remoteTrack = await client.subscribe(user, mediaType);
+
+      remoteTrack.play();
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
-      await getTracks();
+      try {
+        await getTracks();
 
-      await joinChannel();
+        await joinChannel(appID, channelName);
 
-      await publishTracks();
+        await publishTracks();
+      } catch (error) {
+        console.error("Error fetching data for agora");
+        console.log(error);
+      }
     };
 
     fetchData();
@@ -121,7 +163,18 @@ const VideoChat = ({ appID, channelName, client }: Props) => {
       <h2>{channelName}</h2>
       <div className="flex justify-center">
         <div className="grid grid-cols-2 gap-5 ">
-          {/* {cameraTrack && <LocalVideoTrack track={cameraTrack} play={true} />} */}
+          <div
+            id="local-camera"
+            className="h-[400px] w-[500px] object-fill rounded-lg overflow-hidden"
+          >
+            1
+          </div>
+          <div
+            id="remote"
+            className="h-[400px] w-[500px] object-fill rounded-lg overflow-hidden"
+          >
+            2
+          </div>
           {/* {remoteUsers.map((user) => {
             console.log("USER: ", user);
             return (
