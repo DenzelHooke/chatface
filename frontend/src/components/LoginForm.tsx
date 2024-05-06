@@ -9,13 +9,21 @@ import { useNavigate } from "react-router-dom";
 import {
   setError as setToastError,
   setSuccess,
+  setUsername,
 } from "../../features/global/globalSlice";
 import { useDispatch } from "react-redux";
+import { AxiosResponse } from "axios";
 
-type FormFields = {
+interface FormFields {
   username: string;
   password: string;
-};
+}
+
+interface LoginResponse extends AxiosResponse {
+  data: {
+    username: string;
+  };
+}
 
 const passMin = 4;
 const passMinLengthOptions = {
@@ -26,15 +34,6 @@ const passMinLengthOptions = {
 const LoginForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const mutation = useMutation({
-    mutationFn: (data: FormFields) => {
-      return axios.post("/api/auth/register", data);
-    },
-    // mutationFn: (data: FormFields) => {
-    //   return axios.post("http://localhost:3000/api/auth/register", data);
-    // },
-  });
 
   const {
     register,
@@ -50,15 +49,16 @@ const LoginForm = () => {
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     // Arttificial loading for future loading animation
-    await new Promise((resolve, reject) => {
+    await new Promise((resolve) => {
       return setTimeout(resolve, 500);
     });
 
     try {
       //Data gets converted to object containing our fields rather than a formElement Event object.
-      const res = await axios.post("/api/auth/login", data);
+      const res: LoginResponse = await axios.post("/api/auth/login", data);
 
       if (res.status === 200 && res.data) {
+        dispatch(setUsername(res.data.username));
         dispatch(setSuccess("Login Successful"));
         setTimeout(() => navigate("/dashboard"), 500);
       }

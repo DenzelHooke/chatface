@@ -116,7 +116,7 @@ const login = asyncHandler(async (req: Request, res: Response) => {
 
     res.cookie("token", token);
 
-    res.status(200).json({ message: "Hello World" });
+    res.status(200).json({ username: exists.username });
   } catch (error) {
     console.error(error);
     res.status(401);

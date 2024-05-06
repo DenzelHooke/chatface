@@ -9,7 +9,7 @@ const Page = () => {
       <div id="inner-container" className="flex p-5 min-h-screen items-center">
         <Sidebar />
 
-        <div className="flex h-full flex-grow items-center justify-center">
+        <div className="flex h-full flex-grow items-center justify-center ">
           <MainPane />
         </div>
       </div>

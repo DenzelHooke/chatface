@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 export interface GlobalState {
+  username: string | null;
   error: boolean;
   errorMessage: string | null;
   success: boolean;
@@ -13,6 +14,7 @@ export interface GlobalState {
 }
 
 const initialState: GlobalState = {
+  username: localStorage.getItem("username"),
   error: false,
   errorMessage: null,
   success: false,
@@ -50,6 +52,10 @@ export const globalSlice = createSlice({
     setFetchRoom: (state, action: PayloadAction<boolean>) => {
       state.fetchRoom = action.payload;
     },
+    setUsername: (state, action: PayloadAction<string>) => {
+      localStorage.setItem("username", action.payload);
+      state.username = action.payload;
+    },
     reset: (state) => {
       state.error = false;
       state.errorMessage = null;
@@ -62,7 +68,13 @@ export const globalSlice = createSlice({
   },
 });
 
-export const { setError, setSuccess, setRoom, setFetchRoom, reset } =
-  globalSlice.actions;
+export const {
+  setError,
+  setSuccess,
+  setRoom,
+  setFetchRoom,
+  setUsername,
+  reset,
+} = globalSlice.actions;
 
 export default globalSlice.reducer;
