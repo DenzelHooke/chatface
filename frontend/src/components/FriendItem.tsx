@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { setRoom, setFetchRoom } from "../../features/global/globalSlice";
 import { useDispatch } from "react-redux";
 
@@ -21,11 +22,14 @@ const FriendItem = ({
   onDelete: (id: string) => any;
 }) => {
   const dispatch = useDispatch();
+  const [isSelected, setIsSelected] = useState(false);
 
   const onClick = (id: string) => {
     if (disabled) {
       return;
     }
+    setIsSelected((prevState) => !prevState);
+
     dispatch(setFetchRoom(true));
     dispatch(setRoom({ type: "user", _id: item._id, roomName: item.username }));
   };
@@ -33,7 +37,9 @@ const FriendItem = ({
   // TODO Implement framer motion to add on click animation
   return (
     <div
-      className={`p-2 flex space-x-2 shadow-lg rounded-[4px] border-borderGrey border bg-white relative ${
+      className={`p-2 flex space-x-2 rounded-[4px] bg-white relative ${
+        isSelected ? "shadow-lg" : ""
+      } ${
         !disabled ? "hover:bg-gray-50 transition-all hover:cursor-pointer" : ""
       }`}
       onClick={() => onClick(item._id)}

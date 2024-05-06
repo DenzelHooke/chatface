@@ -8,7 +8,7 @@ const MainPane = () => {
 
   return (
     <>
-      <div
+      <section
         id="main-pane"
         className="bg-slate-50 min-h-screen flex-grow rounded-md px-10 py-10 grid"
       >
@@ -23,7 +23,7 @@ const MainPane = () => {
             <ChatBox />
           </div>
         </div>
-      </div>
+      </section>
     </>
   );
 };
