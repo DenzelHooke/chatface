@@ -9,26 +9,33 @@ interface FriendItem {
 }
 
 const FriendItem = ({
+  selected,
   item,
   disabled,
   isRequestMode,
   onAccept,
   onDelete,
+  onSelect,
 }: {
+  selected?: boolean;
   item: FriendItem;
   disabled: boolean;
   isRequestMode: boolean;
   onAccept: (id: string) => any;
   onDelete: (id: string) => any;
+  onSelect?: (id: string) => void;
 }) => {
   const dispatch = useDispatch();
-  const [isSelected, setIsSelected] = useState(false);
 
   const onClick = (id: string) => {
     if (disabled) {
       return;
     }
-    setIsSelected((prevState) => !prevState);
+
+    if (onSelect) {
+      // Passes id of iten so styling can be applied
+      onSelect(item._id);
+    }
 
     dispatch(setFetchRoom(true));
     dispatch(setRoom({ type: "user", _id: item._id, roomName: item.username }));
@@ -38,24 +45,25 @@ const FriendItem = ({
   return (
     <div
       className={`p-2 flex space-x-2 rounded-[4px] bg-white relative ${
-        isSelected ? "shadow-lg" : ""
+        selected ? "shadow-medium" : ""
       } ${
         !disabled ? "hover:bg-gray-50 transition-all hover:cursor-pointer" : ""
       }`}
       onClick={() => onClick(item._id)}
     >
       {!isRequestMode && (
-        <div
-          className="bg-red-500 text-white font-bold p-4 rounded-full absolute right-[-10px] top-[-10px] w-5 h-5 flex justify-center items-center cursor-pointer hover:bg-red-600 transition-all"
-          onClick={() => onDelete(item._id)}
-        >
-          X
-        </div>
+        // <div
+        //   className="bg-red-500 text-white font-bold p-4 rounded-full absolute right-[-10px] top-[-10px] w-5 h-5 flex justify-center items-center cursor-pointer hover:bg-red-600 transition-all"
+        //   onClick={() => onDelete(item._id)}
+        // >
+        //   X
+        // </div>
+        <></>
       )}
       <img
         src={item.profilePicture}
         alt="Profile picture"
-        className="w-[62px] h-[65px] rounded-sm"
+        className="w-[50px] h-[50px] rounded-full"
       />
       <div className="">
         <p className="font-medium text-md">{item.username}</p>

@@ -17,16 +17,20 @@ const queryInterval = 5 * 1000;
 
 const generateFriendsArray = (
   response: ResponseQueryObject,
-  deleteMutate: any
+  deleteMutate: any,
+  onFriendItemSelect: (id: string) => void,
+  selectedFriend: string
 ) => {
   return response.data.result.map((item: FriendItem) => {
     return (
       <FriendItem
+        selected={selectedFriend == item._id}
         item={item}
         disabled={false}
         isRequestMode={false}
         onAccept={() => ""}
         onDelete={deleteMutate}
+        onSelect={onFriendItemSelect}
       />
     );
   });
@@ -50,6 +54,7 @@ const generatePendingFriendRequestsArray = (
 };
 
 const DashboardFriends = () => {
+  const [selectedFriend, setSelectedFriend] = useState<string>("");
   const dispatch = useDispatch();
 
   const getFriends = useQuery({
@@ -115,18 +120,29 @@ const DashboardFriends = () => {
     data: React.ChangeEvent<HTMLInputElement>
   ) => {};
 
+  const onFriendItemSelect = (id: string): void => {
+    setSelectedFriend(id);
+  };
+
   return (
     <div className="hidden md:block bg-white rounded-md p-5 mr-5 w-[300px] border-[1px] border-borderGrey">
       {/* Map o  friends list */}
       <SearchBar onChange={onSearchBarValueChange} />
       <AddFriend />
 
-      <p className="font-bold text-blue-500">Friends</p>
-      {getFriends.data?.data
-        ? generateFriendsArray(getFriends.data, deleteFriendMutation.mutate)
-        : "Ha ha, you have no friends"}
+      <p className="font-bold text-black mb-2">Friends</p>
+      <div id="friend-item-container" className="flex flex-col gap-2">
+        {getFriends.data?.data
+          ? generateFriendsArray(
+              getFriends.data,
+              deleteFriendMutation.mutate,
+              onFriendItemSelect,
+              selectedFriend
+            )
+          : "Ha ha, you have no friends"}
+      </div>
 
-      <p className="font-bold text-green-500">Pending Requests</p>
+      <p className="font-bold text-black mt-10 mb-2">Pending Requests</p>
       {getFriendRequests.data?.data
         ? generatePendingFriendRequestsArray(
             getFriendRequests.data,

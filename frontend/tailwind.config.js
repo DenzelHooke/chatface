@@ -10,6 +10,9 @@ export default {
     },
 
     extend: {
+      boxShadow: {
+        medium: "0px 0px 9px 4px rgba(0,0,0,0.08)",
+      },
       colors: {
         blackishPurple: "#151519",
         lightBlackishPurple: "#1C1C20",
