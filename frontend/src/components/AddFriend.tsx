@@ -19,8 +19,6 @@ const AddFriend = () => {
 
   const onClick = () => {
     setModalOpen(true);
-
-    console.log("Add Friends Clicked");
   };
 
   return (
@@ -34,17 +32,17 @@ const AddFriend = () => {
           onClick={() => setModalOpen(false)}
           className="absolute right-0 top-0 m-2 p-2 px-4 rounded-lg z-50 hover:bg-slate-50 bg-white border border-borderGrey font-bold "
         >
-          X
+          Close
         </button>
         {<AddFriendModal />}
       </Modal>
 
       <button
-        className="text-center hover:bg-lighterBlue bg-lightBlue text-white font-medium w-full
+        className="text-center hover:bg-lighterBlue bg-lightBlue text-sm text-white font-medium w-full
       py-1 px-2 rounded-[5px] mb-10"
         onClick={onClick}
       >
-        Add Friend
+        Add Friends
       </button>
     </>
   );

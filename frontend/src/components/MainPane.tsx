@@ -10,15 +10,15 @@ const MainPane = () => {
     <>
       <section
         id="main-pane"
-        className="bg-slate-50 min-h-screen flex-grow rounded-md px-10 py-10 grid"
+        className="bg-slate-50 flex-grow rounded-md p-8 grid"
       >
         <div
           id="dashboard-info"
-          className="font-bold text-2xl"
+          className="font-bold text-2xl mb-10"
         >{`Hello, ${username}.`}</div>
 
-        <div id="dashboard-ui-container" className="flex items-end mt-10 ">
-          <div className="container flex flex-grow space-x-5 max-w-full max-h-[800px] min-h-[700px] ">
+        <div id="dashboard-ui-container" className="flex items-stretch">
+          <div className="container flex flex-grow space-x-5 max-w-full h-[800px]">
             <DashboardFriends />
             <ChatBox />
           </div>

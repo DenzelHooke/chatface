@@ -63,10 +63,10 @@ const FriendItem = ({
       <img
         src={item.profilePicture}
         alt="Profile picture"
-        className="w-[50px] h-[50px] rounded-full"
+        className="w-[50px] h-[50px] rounded-md"
       />
       <div className="">
-        <p className="font-medium text-md">{item.username}</p>
+        <p className="font-medium text-sm">{item.username}</p>
         {isRequestMode && (
           <>
             <button

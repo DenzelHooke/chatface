@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  box-sizing: border-box;
+}
+
 .lds-dual-ring {
   display: inline-block;
   width: 80px;
