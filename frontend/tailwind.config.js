@@ -19,7 +19,7 @@ export default {
         deepBrightBlue: "#0D4FCF",
         lightBlue: "#3270E8",
         lighterBlue: "#4274d9",
-        lighterDeepBrightBlue: "#2461D6",
+        lighterDeepBrightBlue: "#2e63c7",
         lightPurple: "#252534",
         lightGrey: "#F5F5F5",
         darkGrey: "#696969",

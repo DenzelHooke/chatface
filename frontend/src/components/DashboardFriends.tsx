@@ -125,7 +125,7 @@ const DashboardFriends = () => {
   };
 
   return (
-    <div className="hidden md:block bg-white rounded-md py-4 px-3 mr-5 w-[300px] border-[1px] border-borderGrey">
+    <div className="hidden md:block bg-white rounded-md py-4 px-3 w-[300px] border-[1px] border-borderGrey">
       {/* Map o  friends list */}
       <SearchBar onChange={onSearchBarValueChange} />
       <AddFriend />

@@ -1,6 +1,7 @@
 import { ChangeEventHandler, useEffect } from "react";
 import Input from "../Input";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { IoMdSend } from "react-icons/io";
 
 interface FormFields {
   message: string;
@@ -35,26 +36,36 @@ export const MessageInput = ({
     reset();
     onSubmit(data.message);
   };
+
   return (
-    <div className="h-[85px]">
-      <form onSubmit={handleSubmit(onSubmitForm)}>
-        <Input
-          label=""
-          name="message"
-          placeholder="Say something nice.."
-          register={register}
-          validation={{
-            required: "Must enter a message before sending!",
-          }}
-          error={errors.message}
-        />
-        <button
-          type="submit"
-          className="bg-lighterDeepBrightBlue text-white py-1 px-4 rounded-md mt-2"
+    <div className="h-[85px] bg-lightGrey flex items-center">
+      <form onSubmit={handleSubmit(onSubmitForm)} className="flex-grow">
+        <div
+          id="input-message-wrapper"
+          className="flex items-center px-4 gap-2"
         >
-          Send message
-        </button>
-        <div>{errors.message && errors.message.message}</div>
+          <div className="flex-grow">
+            <input
+              autoComplete="off"
+              className="block w-full bg-lightGrey focus:outline-none focus:border-lightGrey"
+              type="text"
+              name="message"
+              placeholder="Enter message"
+              {...register("message", {
+                required: "Message field must not be empty.",
+              })}
+            />
+            <div className="text-red-500 font-bold">
+              {errors.message && `${errors.message.message}`}
+            </div>
+          </div>
+          <button
+            type="submit"
+            className="bg-deepBrightBlue hover:bg-lighterDeepBrightBlue text-white py-2 px-4 rounded-md flex justify-center items-center gap-2"
+          >
+            Send <IoMdSend size={20} />
+          </button>
+        </div>
       </form>
     </div>
   );

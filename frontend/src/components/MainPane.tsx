@@ -18,7 +18,7 @@ const MainPane = () => {
         >{`Hello, ${username}.`}</div>
 
         <div id="dashboard-ui-container" className="flex items-stretch">
-          <div className="container flex flex-grow space-x-5 max-w-full h-[800px]">
+          <div className="container flex flex-grow space-x-2 max-w-full h-[800px]">
             <DashboardFriends />
             <ChatBox />
           </div>

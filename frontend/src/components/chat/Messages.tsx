@@ -10,7 +10,7 @@ const Messages = ({
   userID: string | null;
 }) => {
   return (
-    <div className="row-span-2 max-h-full flex-1 overflow-auto">
+    <div className="row-span-2 max-h-full flex-1 overflow-auto p-5">
       <>
         {messages.map((item) => (
           <Message
