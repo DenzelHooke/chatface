@@ -134,7 +134,7 @@ io.on("connection", async (socket) => {
     // Listen for chat messages
     socket.on("chatMessage", async (data: MessageData) => {
       // Broadcast the chat message to all clients in the room
-
+      console.log(data);
       // TODO Save message with timestamp in database
       saveMessage(data, user, roomData.roomID);
       io.to(roomData?.roomID as string).emit("chatMessage", {

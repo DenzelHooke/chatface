@@ -56,14 +56,16 @@ export const globalSlice = createSlice({
       localStorage.setItem("username", action.payload);
       state.username = action.payload;
     },
+    resetRoom: (state) => {
+      state.roomName = null;
+      state.type = null;
+      state.recipientID = null;
+    },
     reset: (state) => {
       state.error = false;
       state.errorMessage = null;
       state.success = false;
       state.successMessage = null;
-    },
-    resetRoom: (state) => {
-      state.roomName = null;
     },
   },
 });
@@ -75,6 +77,7 @@ export const {
   setFetchRoom,
   setUsername,
   reset,
+  resetRoom,
 } = globalSlice.actions;
 
 export default globalSlice.reducer;

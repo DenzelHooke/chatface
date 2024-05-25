@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { RootState } from "../../app/store";
 import { io, Socket } from "socket.io-client";
 import Cookies from "js-cookie";
@@ -22,7 +22,7 @@ const ChatBox = () => {
   );
   const dispatch = useDispatch();
 
-  const [socket, setSocket] = useState<Socket | null>(null);
+  const socketRef = useRef<Socket | null>(null);
   const [userID, setUserID] = useState<string | null>(null);
   const [submitMessage, setSubmitMessage] = useState(false);
   const [message, setMessage] = useState("");
@@ -32,8 +32,9 @@ const ChatBox = () => {
   const [typingTimeout, setTypingTimeout] = useState<any>();
 
   const onSubmit = (message: string) => {
-    setSubmitMessage(true);
-    setMessage(message);
+    if (socketRef.current) {
+      socketRef.current.emit("chatMessage", { message });
+    }
   };
 
   const startTypingTimeout = () => {
@@ -42,23 +43,15 @@ const ChatBox = () => {
   };
 
   useEffect(() => {
-    if (submitMessage && socket) {
-      socket.emit("chatMessage", { message });
-      setMessage("");
-      setSubmitMessage(false);
-    }
-  }, [submitMessage, socket]);
-
-  useEffect(() => {
-    if (isTyping && socket) {
-      socket.emit("isTyping", { userID });
+    if (isTyping && socketRef.current) {
+      socketRef.current.emit("isTyping", { userID });
       setIsTyping(false);
     }
-  }, [isTyping, socket, userID]);
+  }, [isTyping, socketRef]);
 
   useEffect(() => {
-    if (fetchRoom && roomName && recipientID) {
-      const newSocket = io(SERVER_URL, {
+    if (fetchRoom) {
+      socketRef.current = io(SERVER_URL, {
         reconnectionDelayMax: 10000,
         query: {
           recipient: recipientID,
@@ -68,17 +61,18 @@ const ChatBox = () => {
         },
       });
 
-      newSocket.on("error", (error: any) => {
+      socketRef.current.on("error", (error: any) => {
         console.error("WebSocket connection error:", error);
       });
 
-      newSocket.on("disconnect", () => {});
+      socketRef.current.on("disconnect", () => {});
 
-      newSocket.on("chatMessage", (data: MessageData) => {
+      socketRef.current.on("chatMessage", (data: MessageData) => {
+        console.log("New message ", data);
         setMessages((prevState) => [...prevState, data]);
       });
 
-      newSocket.on(
+      socketRef.current.on(
         "init",
         (data: { userID: string; messages: MessageData[] }) => {
           setUserID(data.userID);
@@ -93,23 +87,27 @@ const ChatBox = () => {
         }
       );
 
-      newSocket.on("isTyping", () => {
+      dispatch(setFetchRoom(false));
+    }
+  }, [fetchRoom]);
+
+  useEffect(() => {
+    if (socketRef.current) {
+      socketRef.current.on("isTyping", () => {
         if (typingTimeout) {
           clearTimeout(typingTimeout);
         }
         setFriendIsTyping(true);
         startTypingTimeout();
       });
-
-      setSocket(newSocket);
-      dispatch(setFetchRoom(false));
     }
-  }, [fetchRoom, roomName, recipientID, dispatch, typingTimeout]);
+  }, [isTyping]);
 
-  const client = useRTCClient(
-    //@ts-ignore
-    AgoraRTC.createClient({ codec: "vp8", mode: "rtc" })
-  );
+  //! Client is being reinitialized on every re-render must fix!
+  // const client = useRTCClient(
+  //   //@ts-ignore
+  //   AgoraRTC.createClient({ codec: "vp8", mode: "rtc" })
+  // );
 
   const [channelName, setChannelName] = useState<string>("testChannel");
 
@@ -124,8 +122,13 @@ const ChatBox = () => {
         <VideoChat appID={APP_ID} channelName={channelName} client={client} />
       </AgoraRTCProvider> */}
       <Messages messages={messages} userID={userID} />
-      <div>{friendIsTyping && "User is typing"}</div>
-      <MessageInput onSubmit={onSubmit} onChange={onMessageInput} />
+      {/* <div>{friendIsTyping && "User is typing"}</div>  */}
+
+      {socketRef.current ? (
+        <MessageInput onSubmit={onSubmit} onChange={onMessageInput} />
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

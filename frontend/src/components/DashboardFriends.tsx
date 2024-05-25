@@ -1,12 +1,19 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "../config/axiosConfig";
-import { UseDispatch, useDispatch } from "react-redux";
-import { setError, setSuccess } from "../../features/global/globalSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  resetRoom,
+  setError,
+  setFetchRoom,
+  setRoom,
+} from "../../features/global/globalSlice";
 import FriendItem from "./FriendItem";
 import SearchBar from "./Searchbar";
 import AddFriend from "./AddFriend";
 import { ResponseQueryObject, AcceptRequestDto } from "../types/types";
+
+import { RootState } from "../../app/store";
 
 interface FriendItem {
   username: string;
@@ -18,7 +25,7 @@ const queryInterval = 5 * 1000;
 const generateFriendsArray = (
   response: ResponseQueryObject,
   deleteMutate: any,
-  onFriendItemSelect: (id: string) => void,
+  onFriendItemSelect: (item: FriendItem) => void,
   selectedFriend: string
 ) => {
   return response.data.result.map((item: FriendItem) => {
@@ -56,6 +63,7 @@ const generatePendingFriendRequestsArray = (
 const DashboardFriends = () => {
   const [selectedFriend, setSelectedFriend] = useState<string>("");
   const dispatch = useDispatch();
+  const { recipientID } = useSelector((state: RootState) => state.global);
 
   const getFriends = useQuery({
     queryKey: ["getFriends"],
@@ -120,8 +128,18 @@ const DashboardFriends = () => {
     data: React.ChangeEvent<HTMLInputElement>
   ) => {};
 
-  const onFriendItemSelect = (id: string): void => {
-    setSelectedFriend(id);
+  const onFriendItemSelect = (item: FriendItem): void => {
+    setSelectedFriend(item._id);
+
+    if (recipientID) {
+      // If client is already connected to another user, reset that state.
+      dispatch(resetRoom());
+    }
+
+    // Prepares data for room connection
+    dispatch(setRoom({ type: "user", _id: item._id, roomName: item.username }));
+    // Tells other hooks to pull current user data
+    dispatch(setFetchRoom(true));
   };
 
   return (

@@ -1,6 +1,11 @@
 import { useState } from "react";
-import { setRoom, setFetchRoom } from "../../features/global/globalSlice";
-import { useDispatch } from "react-redux";
+import {
+  setRoom,
+  setFetchRoom,
+  resetRoom,
+} from "../../features/global/globalSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../app/store";
 
 interface FriendItem {
   username: string;
@@ -23,10 +28,8 @@ const FriendItem = ({
   isRequestMode: boolean;
   onAccept: (id: string) => any;
   onDelete: (id: string) => any;
-  onSelect?: (id: string) => void;
+  onSelect?: (item: FriendItem) => void;
 }) => {
-  const dispatch = useDispatch();
-
   const onClick = (id: string) => {
     if (disabled) {
       return;
@@ -34,11 +37,8 @@ const FriendItem = ({
 
     if (onSelect) {
       // Passes id of iten so styling can be applied
-      onSelect(item._id);
+      onSelect(item);
     }
-
-    dispatch(setFetchRoom(true));
-    dispatch(setRoom({ type: "user", _id: item._id, roomName: item.username }));
   };
 
   // TODO Implement framer motion to add on click animation
