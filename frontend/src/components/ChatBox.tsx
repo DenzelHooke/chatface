@@ -24,12 +24,11 @@ const ChatBox = () => {
 
   const socketRef = useRef<Socket | null>(null);
   const [userID, setUserID] = useState<string | null>(null);
-  const [submitMessage, setSubmitMessage] = useState(false);
-  const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<MessageData[]>([]);
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [friendIsTyping, setFriendIsTyping] = useState<boolean>(false);
   const [typingTimeout, setTypingTimeout] = useState<any>();
+  const socketInitialized = useRef(false);
 
   const onSubmit = (message: string) => {
     if (socketRef.current) {
@@ -51,6 +50,10 @@ const ChatBox = () => {
 
   useEffect(() => {
     if (fetchRoom) {
+      socketInitialized.current = false;
+    }
+    if (fetchRoom && !socketInitialized.current) {
+      console.log("INITSSS");
       socketRef.current = io(SERVER_URL, {
         reconnectionDelayMax: 10000,
         query: {
@@ -87,9 +90,19 @@ const ChatBox = () => {
         }
       );
 
+      socketInitialized.current = true;
       dispatch(setFetchRoom(false));
     }
   }, [fetchRoom]);
+
+  useEffect(() => {
+    return () => {
+      if (socketRef.current && socketInitialized.current) {
+        console.log("disconnected socket");
+        socketRef.current.disconnect();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (socketRef.current) {
@@ -108,8 +121,6 @@ const ChatBox = () => {
   //   //@ts-ignore
   //   AgoraRTC.createClient({ codec: "vp8", mode: "rtc" })
   // );
-
-  const [channelName, setChannelName] = useState<string>("testChannel");
 
   const onMessageInput = () => {
     setIsTyping(true);
