@@ -23,12 +23,12 @@ const ChatBox = () => {
   const dispatch = useDispatch();
 
   const socketRef = useRef<Socket | null>(null);
+  const socketInitialized = useRef(false);
   const [userID, setUserID] = useState<string | null>(null);
   const [messages, setMessages] = useState<MessageData[]>([]);
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [friendIsTyping, setFriendIsTyping] = useState<boolean>(false);
   const [typingTimeout, setTypingTimeout] = useState<any>();
-  const socketInitialized = useRef(false);
 
   const onSubmit = (message: string) => {
     if (socketRef.current) {
@@ -50,10 +50,17 @@ const ChatBox = () => {
 
   useEffect(() => {
     if (fetchRoom) {
+      // Resets socket to false if a new room is currently getting fetched. 
       socketInitialized.current = false;
+
+      if(socketRef.current) {
+        socketRef.current.disconnect()
+      }
     }
+
     if (fetchRoom && !socketInitialized.current) {
-      console.log("INITSSS");
+
+      // Initialize socket connection to server
       socketRef.current = io(SERVER_URL, {
         reconnectionDelayMax: 10000,
         query: {
@@ -75,6 +82,8 @@ const ChatBox = () => {
         setMessages((prevState) => [...prevState, data]);
       });
 
+
+      // Set user ID and pull current messages for recipient ID.
       socketRef.current.on(
         "init",
         (data: { userID: string; messages: MessageData[] }) => {
@@ -90,12 +99,15 @@ const ChatBox = () => {
         }
       );
 
+      // Set socket init to True.
       socketInitialized.current = true;
       dispatch(setFetchRoom(false));
     }
   }, [fetchRoom]);
 
   useEffect(() => {
+
+    // Disconnect socket on component dismount
     return () => {
       if (socketRef.current && socketInitialized.current) {
         console.log("disconnected socket");
