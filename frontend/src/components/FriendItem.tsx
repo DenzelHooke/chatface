@@ -44,7 +44,7 @@ const FriendItem = ({
   // TODO Implement framer motion to add on click animation
   return (
     <div
-      className={`p-2 flex space-x-2 rounded-[4px] bg-white relative ${
+      className={`p-2 flex space-x-2 rounded-[4px] items-center bg-white relative ${
         selected ? "shadow-medium" : ""
       } ${
         !disabled ? "hover:bg-gray-50 transition-all hover:cursor-pointer" : ""
@@ -63,10 +63,10 @@ const FriendItem = ({
       <img
         src={item.profilePicture}
         alt="Profile picture"
-        className="w-[65px] h-[65px] rounded-md"
+        className="w-[50px] h-[50px] rounded-full"
       />
       <div className="">
-        <p className="font-medium text-sm">{item.username}</p>
+        <p className="text-sm">{item.username}</p>
         {isRequestMode && (
           <>
             <button

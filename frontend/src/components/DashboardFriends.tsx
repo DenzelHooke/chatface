@@ -11,6 +11,7 @@ import {
 import FriendItem from "./FriendItem";
 import SearchBar from "./Searchbar";
 import AddFriend from "./AddFriend";
+import { IoAddCircleSharp } from "react-icons/io5";
 import { ResponseQueryObject, AcceptRequestDto } from "../types/types";
 
 import { RootState } from "../../app/store";
@@ -148,7 +149,15 @@ const DashboardFriends = () => {
       <SearchBar onChange={onSearchBarValueChange} />
       <AddFriend />
 
-      <p className="font-bold text-black mb-2">Friends</p>
+      <div className="flex items-center justify-between mb-2">
+        <p className="font-semibold text-gray-500">Direct Message</p>
+
+        <IoAddCircleSharp
+          size={35}
+          color="#6b7280"
+          className="hover:fill-gray-400 cursor-pointer"
+        />
+      </div>
       <div id="friend-item-container" className="flex flex-col gap-2">
         {getFriends.data?.data
           ? generateFriendsArray(
@@ -160,7 +169,9 @@ const DashboardFriends = () => {
           : "Ha ha, you have no friends"}
       </div>
 
-      <p className="font-bold text-black mt-10 mb-2">Pending Requests</p>
+      <p className=" font-semibold text-gray-500 mt-10 mb-2">
+        Pending Requests
+      </p>
       {getFriendRequests.data?.data
         ? generatePendingFriendRequestsArray(
             getFriendRequests.data,
