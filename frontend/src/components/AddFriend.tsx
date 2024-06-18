@@ -2,6 +2,7 @@ import Button from "./Button";
 import Modal from "react-modal";
 import { useState, useEffect } from "react";
 import AddFriendModal from "./AddFriendModal";
+import { IoAddCircleSharp } from "react-icons/io5";
 
 const customStyles = {
   content: {
@@ -37,13 +38,11 @@ const AddFriend = () => {
         {<AddFriendModal />}
       </Modal>
 
-      <button
-        className="text-center hover:bg-lighterDeepBrightBlue bg-deepBrightBlue text-sm text-white font-medium w-full
-      py-1 px-2 rounded-[5px] mb-10"
-        onClick={onClick}
-      >
-        Add Friends
-      </button>
+      <IoAddCircleSharp
+          size={35}
+          className="hover:fill-darkGrey cursor-pointer fill-blackishPurple"
+          onClick={onClick}
+        />
     </>
   );
 };

@@ -66,7 +66,7 @@ const FriendItem = ({
         className="w-[50px] h-[50px] rounded-full"
       />
       <div className="">
-        <p className="text-sm">{item.username}</p>
+        <p className="">{item.username}</p>
         {isRequestMode && (
           <>
             <button

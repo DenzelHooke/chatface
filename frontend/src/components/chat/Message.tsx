@@ -14,8 +14,8 @@ const Message = ({ body, name, profile, isSender }: PropData) => {
           <div
             id="messageInfo"
             className={` ${
-              isSender ? "bg-blue-600 text-white font-medium" : "bg-gray-200"
-            } p-2 my-2 rounded-md`}
+              isSender ? "bg-gray-200 text-black" : "bg-gray-200"
+            } py-1 px-3 my-2 rounded-md`}
           >
             <p>{body}</p>
 

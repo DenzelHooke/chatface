@@ -147,16 +147,11 @@ const DashboardFriends = () => {
     <div className="hidden md:block bg-white rounded-md py-4 px-3 w-[300px] border-[1px] border-borderGrey">
       {/* Map o  friends list */}
       <SearchBar onChange={onSearchBarValueChange} />
-      <AddFriend />
 
       <div className="flex items-center justify-between mb-2">
-        <p className="font-semibold text-gray-500">Direct Message</p>
+        <p className="font-semibold ">Direct Message</p>
+        <AddFriend />
 
-        <IoAddCircleSharp
-          size={35}
-          color="#6b7280"
-          className="hover:fill-gray-400 cursor-pointer"
-        />
       </div>
       <div id="friend-item-container" className="flex flex-col gap-2">
         {getFriends.data?.data
@@ -169,7 +164,7 @@ const DashboardFriends = () => {
           : "Ha ha, you have no friends"}
       </div>
 
-      <p className=" font-semibold text-gray-500 mt-10 mb-2">
+      <p className=" font-semibold text-gray-950 mt-10 mb-2">
         Pending Requests
       </p>
       {getFriendRequests.data?.data
