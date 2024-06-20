@@ -52,13 +52,12 @@ const FriendItem = ({
       onClick={() => onClick(item._id)}
     >
       {!isRequestMode && (
-        // <div
-        //   className="bg-red-500 text-white font-bold p-4 rounded-full absolute right-[-10px] top-[-10px] w-5 h-5 flex justify-center items-center cursor-pointer hover:bg-red-600 transition-all"
-        //   onClick={() => onDelete(item._id)}
-        // >
-        //   X
-        // </div>
-        <></>
+        <div
+          className="bg-red-500 text-white font-bold p-4 rounded-full absolute right-[-10px] top-[-10px] w-5 h-5 flex justify-center items-center cursor-pointer hover:bg-red-600 transition-all"
+          onClick={() => onDelete(item._id)}
+        >
+          X
+        </div>
       )}
       <img
         src={item.profilePicture}

@@ -50,16 +50,15 @@ const ChatBox = () => {
 
   useEffect(() => {
     if (fetchRoom) {
-      // Resets socket to false if a new room is currently getting fetched. 
+      // Resets socket to false if a new room is currently getting fetched.
       socketInitialized.current = false;
 
-      if(socketRef.current) {
-        socketRef.current.disconnect()
+      if (socketRef.current) {
+        socketRef.current.disconnect();
       }
     }
 
     if (fetchRoom && !socketInitialized.current) {
-
       // Initialize socket connection to server
       socketRef.current = io(SERVER_URL, {
         reconnectionDelayMax: 10000,
@@ -81,7 +80,6 @@ const ChatBox = () => {
         console.log("New message ", data);
         setMessages((prevState) => [...prevState, data]);
       });
-
 
       // Set user ID and pull current messages for recipient ID.
       socketRef.current.on(
@@ -106,7 +104,6 @@ const ChatBox = () => {
   }, [fetchRoom]);
 
   useEffect(() => {
-
     // Disconnect socket on component dismount
     return () => {
       if (socketRef.current && socketInitialized.current) {
@@ -139,7 +136,7 @@ const ChatBox = () => {
   };
 
   return (
-    <div className="bg-white flex-grow max-w-full border-[1px] border-borderGrey rounded-md grid grid-cols-1 gap-0 grid-rows-[80px_1fr_85px]">
+    <div className="bg-white flex-grow max-w-6xl border-[1px] border-borderGrey rounded-md grid grid-cols-1 gap-0 grid-rows-[80px_1fr_85px]">
       <RoomInfo currentRoom={roomName} />
       {/* <AgoraRTCProvider client={client}>
         <VideoChat appID={APP_ID} channelName={channelName} client={client} />
