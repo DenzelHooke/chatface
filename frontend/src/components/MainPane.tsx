@@ -4,24 +4,22 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 
 const MainPane = () => {
-  const { username } = useSelector((state: RootState) => state.global);
+  const { username, roomName } = useSelector(
+    (state: RootState) => state.global
+  );
 
   return (
     <>
-      <section
-        id="main-pane"
-        className="bg-slate-50 flex-grow rounded-md p-8 grid"
-      >
-        <div
+      <section id="main-pane" className="bg-lightBlackishPurple relative">
+        {/* <div                        
           id="dashboard-info"
           className="font-bold text-2xl mb-10"
-        >{`Hello, ${username}.`}</div>
+        >{`Hello, ${username}.`}</div> */}
 
-        <div id="dashboard-ui-container" className="flex items-stretch">
-          <div className="container flex flex-grow space-x-2 max-w-full h-[800px]">
-            <DashboardFriends />
-            <ChatBox />
-          </div>
+        <div className="flex flex-grow space-x-2 absolute top-0 left-0 right-0 bottom-0">
+          <DashboardFriends />
+
+          {roomName && <ChatBox />}
         </div>
       </section>
     </>

@@ -2,18 +2,16 @@ import { useDispatch } from "react-redux";
 
 import Sidebar from "../components/Sidebar";
 import MainPane from "../components/MainPane";
+import Navbar from "../components/navbar";
 
 const Page = () => {
   return (
-    <section className="bg-blackishPurple relative min-h-screen flex items-center">
-      <div className="flex grow">
-        <div id="inner-container" className="flex p-5 items-center flex-grow">
-          <Sidebar />
-          <div className="flex flex-grow items-center justify-center">
-            <MainPane />
-          </div>
-        </div>
-      </div>
+    <section
+      id="main-container"
+      className=" relative min-h-[1000px] grid grid-cols-1 grid-rows-[80px_1fr]"
+    >
+      <Navbar />
+      <MainPane />
       {/* <DashboardFriends /> */}
     </section>
   );

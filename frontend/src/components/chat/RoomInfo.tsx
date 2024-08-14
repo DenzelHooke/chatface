@@ -5,7 +5,7 @@ const RoomInfo = ({ currentRoom }: { currentRoom: string | null }) => {
     <div className="p-5">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-darkBlack text-3xl">{currentRoom}</h2>
+          <h2 className="text-white text-3xl font-light">{currentRoom}</h2>
           <div className="bg-green-500 w-3 h-3 mr-1 aspect-square rounded-full"></div>
         </div>
         <Options className="ml-auto" />

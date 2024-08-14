@@ -144,15 +144,16 @@ const DashboardFriends = () => {
   };
 
   return (
-    <div className="hidden md:block bg-white rounded-md py-4 px-3 w-[300px] border-[1px] border-borderGrey">
+    <div className="hidden md:block bg-blackishPurple py-4 px-3 w-[300px]  text-white">
       {/* Map o  friends list */}
-      <SearchBar onChange={onSearchBarValueChange} />
+      {/* <SearchBar onChange={onSearchBarValueChange} /> */}
+      <div className="text-2xl font-light">Friends</div>
 
-      <div className="flex items-center justify-between mb-2">
-        <p className="font-semibold ">Direct Message</p>
+      <div className="flex items-center justify-between mb-6 mt-10">
+        <p className="uppercase  font-semibold">Direct Message</p>
         <AddFriend />
-
       </div>
+
       <div id="friend-item-container" className="flex flex-col gap-2">
         {getFriends.data?.data
           ? generateFriendsArray(
@@ -164,9 +165,7 @@ const DashboardFriends = () => {
           : "Ha ha, you have no friends"}
       </div>
 
-      <p className=" font-semibold text-gray-950 mt-10 mb-2">
-        Pending Requests
-      </p>
+      <p className="uppercase  mt-10 mb-2 font-semibold">Pending Requests</p>
       {getFriendRequests.data?.data
         ? generatePendingFriendRequestsArray(
             getFriendRequests.data,

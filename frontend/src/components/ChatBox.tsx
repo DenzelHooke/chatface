@@ -136,7 +136,7 @@ const ChatBox = () => {
   };
 
   return (
-    <div className="bg-white flex-grow max-w-6xl border-[1px] border-borderGrey rounded-md grid grid-cols-1 gap-0 grid-rows-[80px_1fr_85px]">
+    <div className="bg-lightishPurple flex-grow rounded-md grid grid-cols-1 gap-0 grid-rows-[80px_1fr_85px]">
       <RoomInfo currentRoom={roomName} />
       {/* <AgoraRTCProvider client={client}>
         <VideoChat appID={APP_ID} channelName={channelName} client={client} />

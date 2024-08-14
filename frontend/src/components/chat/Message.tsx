@@ -21,7 +21,7 @@ const Message = ({ body, name, profile, isSender }: PropData) => {
 
             {/* <div>Timestamp</div> */}
           </div>
-          <div>{name}</div>
+          <div className="text-white">{name}</div>
         </div>
       </div>
     </div>
