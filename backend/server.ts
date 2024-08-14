@@ -18,7 +18,7 @@ import { Socket } from "socket.io";
 
 const app: Express = express();
 const port: Number = 80;
-const origins = ["http://localhost:5173", "http://192.168.1.95:5173"];
+const origins = ["*"];
 
 const corsOptions = {
   origin: origins,
